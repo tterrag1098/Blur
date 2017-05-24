@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid = "blurbg", name = "BlurBG")
+@Mod(modid = "blurbg", name = "BlurBG", version = "@VERSION@", acceptedMinecraftVersions = "[1.9, 1.12)")
 public class BlurBG {
     
     private String[] blurExclusions;
