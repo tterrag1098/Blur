@@ -54,7 +54,7 @@ public class BlurBGTransformer implements IClassTransformer {
                 }
             }
             
-            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
             classNode.accept(cw);
             System.out.println("Transforming " + transformedName + " Finished.");
             return cw.toByteArray();
