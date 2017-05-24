@@ -47,5 +47,6 @@ processResources {
 
 jar.manifest {
     attributes 'FMLCorePlugin': 'com.tterrag.blurbg.BlurBGPlugin'
+    attributes 'FMLCorePluginContainsFMLMod': 'true'
 }
 
