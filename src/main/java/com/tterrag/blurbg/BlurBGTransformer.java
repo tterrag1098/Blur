@@ -45,6 +45,7 @@ public class BlurBGTransformer implements IClassTransformer {
 //                        }
                         if (next.getOpcode() == Opcodes.LDC) {
                             // TODO make this configurable? 
+                            System.out.println("Modifying GUI background darkness... ");
                             ((LdcInsnNode)next).cst = ((LdcInsnNode)next.getNext()).cst = 0x66000000;
                             break;
                         }
