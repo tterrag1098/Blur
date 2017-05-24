@@ -4,6 +4,7 @@ import java.util.Map;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
+@IFMLLoadingPlugin.SortingIndex(Integer.MAX_VALUE)
 public class BlurBGPlugin implements IFMLLoadingPlugin {
 
     @Override
