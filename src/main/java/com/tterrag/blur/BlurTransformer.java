@@ -1,4 +1,4 @@
-package com.tterrag.blurbg;
+package com.tterrag.blur;
 
 import java.util.Iterator;
 
@@ -13,14 +13,14 @@ import org.objectweb.asm.tree.MethodNode;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 
-public class BlurBGTransformer implements IClassTransformer {
+public class BlurTransformer implements IClassTransformer {
 
     private static final String GUI_SCREEN_CLASS_NAME = "net.minecraft.client.gui.GuiScreen";
     
     private static final String DRAW_WORLD_BAGKGROUND_METHOD = "drawWorldBackground";
     private static final String DRAW_WORLD_BAGKGROUND_METHOD_OBF = "func_146270_b";
     
-    private static final String BLUR_MAIN_CLASS = "com/tterrag/blurbg/BlurBG";
+    private static final String BLUR_MAIN_CLASS = "com/tterrag/blur/Blur";
     private static final String COLOR_HOOK_METHOD_NAME = "getBackgroundColor";
     private static final String COLOR_HOOK_METHOD_DESC = "(Z)I";
 

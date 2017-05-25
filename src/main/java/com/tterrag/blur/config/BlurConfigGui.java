@@ -1,6 +1,6 @@
-package com.tterrag.blurbg.config;
+package com.tterrag.blur.config;
 
-import com.tterrag.blurbg.BlurBG;
+import com.tterrag.blur.Blur;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
@@ -10,6 +10,6 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 public class BlurConfigGui extends GuiConfig {
 
     public BlurConfigGui(GuiScreen parentScreen) {
-        super(parentScreen, new ConfigElement(BlurBG.instance.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), "blurbg", false, false, "blurbg.config.title");
+        super(parentScreen, new ConfigElement(Blur.instance.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), Blur.MODID, false, false, Blur.MODID + ".config.title");
     }
 }

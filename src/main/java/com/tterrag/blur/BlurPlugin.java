@@ -1,15 +1,15 @@
-package com.tterrag.blurbg;
+package com.tterrag.blur;
 
 import java.util.Map;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.SortingIndex(Integer.MAX_VALUE)
-public class BlurBGPlugin implements IFMLLoadingPlugin {
+public class BlurPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] { "com.tterrag.blurbg.BlurBGTransformer" };
+        return new String[] { "com.tterrag.blur.BlurTransformer" };
     }
 
     @Override

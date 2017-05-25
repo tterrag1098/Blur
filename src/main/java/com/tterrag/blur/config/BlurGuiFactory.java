@@ -1,4 +1,4 @@
-package com.tterrag.blurbg.config;
+package com.tterrag.blur.config;
 
 import java.util.Set;
 

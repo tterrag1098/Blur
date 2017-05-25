@@ -1,4 +1,4 @@
-package com.tterrag.blurbg;
+package com.tterrag.blur;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -8,7 +8,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.base.Throwables;
 
-import static com.tterrag.blurbg.BlurBG.*;
+import static com.tterrag.blur.Blur.*;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
@@ -31,14 +31,14 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 @Mod(modid = MODID, name = MOD_NAME, version = VERSION, acceptedMinecraftVersions = "[1.9, 1.12)", clientSideOnly = true, guiFactory = "com.tterrag.blurbg.config.BlurGuiFactory")
-public class BlurBG {
+public class Blur {
     
-    public static final String MODID = "blurbg";
-    public static final String MOD_NAME = "BlurBG";
+    public static final String MODID = "blur";
+    public static final String MOD_NAME = "Blur";
     public static final String VERSION = "@VERSION@";
     
     @Instance
-    public static BlurBG instance;
+    public static Blur instance;
     
     public Configuration config;
     
@@ -54,7 +54,7 @@ public class BlurBG {
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
         
-        config = new Configuration(new File(event.getModConfigurationDirectory(), "blurbg.cfg"));
+        config = new Configuration(new File(event.getModConfigurationDirectory(), "blur.cfg"));
         saveConfig();
     }
     

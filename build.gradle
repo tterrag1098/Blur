@@ -21,6 +21,8 @@ minecraft {
 	mappings = 'stable_29'
 	
     runDir = 'run'
+
+	clientJvmArgs += '-Dfml.coreMods.load=com.tterrag.blur.BlurPlugin'
 	
 	replace "@VERSION@", project.version
 }
@@ -46,7 +48,7 @@ processResources {
 }
 
 jar.manifest {
-    attributes 'FMLCorePlugin': 'com.tterrag.blurbg.BlurBGPlugin'
+    attributes 'FMLCorePlugin': 'com.tterrag.blur.BlurPlugin'
     attributes 'FMLCorePluginContainsFMLMod': 'true'
 }
 
