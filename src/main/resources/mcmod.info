@@ -1,0 +1,16 @@
+[
+{
+  "modid": "blurbg",
+  "name": "BlurBG",
+  "description": "Adds a blurry background when viewing GUIs",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://tterrag.com",
+  "updateUrl": "http://ci.tterrag.com/job/BlurBG",
+  "authorList": ["tterrag"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

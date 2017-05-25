@@ -8,6 +8,8 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.base.Throwables;
 
+import static com.tterrag.blurbg.BlurBG.*;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -18,6 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -27,11 +30,17 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-@Mod(modid = "blurbg", name = "BlurBG", version = "@VERSION@", acceptedMinecraftVersions = "[1.9, 1.12)", clientSideOnly = true)
+@Mod(modid = MODID, name = MOD_NAME, version = VERSION, acceptedMinecraftVersions = "[1.9, 1.12)", clientSideOnly = true, guiFactory = "com.tterrag.blurbg.config.BlurGuiFactory")
 public class BlurBG {
+    
+    public static final String MODID = "blurbg";
+    public static final String MOD_NAME = "BlurBG";
+    public static final String VERSION = "@VERSION@";
     
     @Instance
     public static BlurBG instance;
+    
+    public Configuration config;
     
     private String[] blurExclusions;
 
@@ -45,7 +54,11 @@ public class BlurBG {
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
         
-        Configuration config = new Configuration(new File(event.getModConfigurationDirectory(), "blurbg.cfg"));
+        config = new Configuration(new File(event.getModConfigurationDirectory(), "blurbg.cfg"));
+        saveConfig();
+    }
+    
+    private void saveConfig() {
         
         blurExclusions = config.getStringList("guiExclusions", Configuration.CATEGORY_GENERAL, new String[] {
                 GuiChat.class.getName(),
@@ -64,6 +77,13 @@ public class BlurBG {
         );
         
         config.save();
+    }
+    
+    @SubscribeEvent
+    public void onConfigChanged(OnConfigChangedEvent event) {
+        if (event.getModID().equals(MODID)) {
+            saveConfig();
+        }
     }
     
     @SuppressWarnings("null")
