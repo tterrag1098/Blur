@@ -19,16 +19,20 @@ public class BlurConfigGui extends GuiConfig {
     
     @Override
     public void initGui() {
-        super.initGui();
-        this.entryList = new GuiConfigEntries(this, mc) {
-            @SuppressWarnings({ "unused", "null" })
-            @Override
-            protected void drawContainerBackground(@Nonnull Tessellator tessellator) {
-                if (mc.world == null) {
-                    super.drawContainerBackground(tessellator);
+        if (this.entryList == null || this.needsRefresh)
+        {
+            this.entryList = new GuiConfigEntries(this, mc) {
+                @SuppressWarnings({ "unused", "null" })
+                @Override
+                protected void drawContainerBackground(@Nonnull Tessellator tessellator) {
+                    if (mc.world == null) {
+                        super.drawContainerBackground(tessellator);
+                    }
                 }
-            }
-        };
+            };
+            this.needsRefresh = false;
+        }
+        super.initGui();
     }
     
     @Override
