@@ -58,8 +58,8 @@ public class BlurTransformer implements IClassTransformer {
                             m.instructions.set(colorHook.getNext(), colorHook2);
 
                             // Load boolean constants for method param
-                            m.instructions.insertBefore(colorHook, new InsnNode(Opcodes.ICONST_0));
-                            m.instructions.insertBefore(colorHook2, new InsnNode(Opcodes.ICONST_1));
+                            m.instructions.insertBefore(colorHook, new InsnNode(Opcodes.ICONST_1));
+                            m.instructions.insertBefore(colorHook2, new InsnNode(Opcodes.ICONST_0));
                             break;
                         }
                     }
