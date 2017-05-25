@@ -30,7 +30,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-@Mod(modid = MODID, name = MOD_NAME, version = VERSION, acceptedMinecraftVersions = "[1.9, 1.12)", clientSideOnly = true, guiFactory = "com.tterrag.blurbg.config.BlurGuiFactory")
+@Mod(modid = MODID, name = MOD_NAME, version = VERSION, acceptedMinecraftVersions = "[1.9, 1.12)", clientSideOnly = true, guiFactory = "com.tterrag.blur.config.BlurGuiFactory")
 public class Blur {
     
     public static final String MODID = "blur";
