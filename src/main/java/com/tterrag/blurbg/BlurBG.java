@@ -20,6 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -29,11 +30,16 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 @Mod(modid = "blurbg", name = "BlurBG", version = "@VERSION@", acceptedMinecraftVersions = "[1.9, 1.12)")
 public class BlurBG {
     
+    @Instance
+    public static BlurBG instance;
+    
     private String[] blurExclusions;
 
     private Field _listShaders;
     private long start;
     private int fadeTime;
+    
+    private int colorFirst, colorSecond;
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -46,6 +52,16 @@ public class BlurBG {
         }, "A list of classes to be excluded from the blur shader.");
         
         fadeTime = config.getInt("fadeTime", Configuration.CATEGORY_GENERAL, 300, 0, Integer.MAX_VALUE, "The time it takes for the blur to fade in, in ms.");
+        
+        colorFirst = Integer.parseUnsignedInt(
+                config.getString("gradientStartColor",  Configuration.CATEGORY_GENERAL, "66000000", "The start color of the background gradient. Given in ARGB hex."),
+                16
+        );
+        
+        colorSecond = Integer.parseUnsignedInt(
+                config.getString("gradientEndColor",    Configuration.CATEGORY_GENERAL, "66000000", "The end color of the background gradient. Given in ARGB hex."),
+                16
+        );
         
         config.save();
     }
@@ -67,6 +83,10 @@ public class BlurBG {
         }
     }
     
+    private float getProgress() {
+        return Math.min((System.currentTimeMillis() - start) / (float) fadeTime, 1);
+    }
+    
     @SuppressWarnings("null")
     @SubscribeEvent
     public void onRenderTick(RenderTickEvent event) {
@@ -78,7 +98,7 @@ public class BlurBG {
                 for (Shader s : shaders) {
                     ShaderUniform su = s.getShaderManager().getShaderUniform("Progress");
                     if (su != null) {
-                        su.set(Math.min((System.currentTimeMillis() - start) / (float) fadeTime, 1));
+                        su.set(getProgress());
                     }
                 }
             } catch (IllegalArgumentException | IllegalAccessException e) {
@@ -86,5 +106,18 @@ public class BlurBG {
             }
         }
     }
-
+    
+    public static int getBackgroundColor(boolean second) {
+        int color = second ? instance.colorSecond : instance.colorFirst;
+        int a = color >> 24;
+        int r = (color >> 16) & 0xFF;
+        int b = (color >> 8) & 0xFF;
+        int g = color & 0xFF;
+        float prog = instance.getProgress();
+        a *= prog;
+        r *= prog;
+        g *= prog;
+        b *= prog;
+        return a << 24 | r << 16 | b << 8 | g;
+    }
 }

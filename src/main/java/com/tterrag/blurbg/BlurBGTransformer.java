@@ -7,7 +7,8 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -18,6 +19,10 @@ public class BlurBGTransformer implements IClassTransformer {
     
     private static final String DRAW_WORLD_BAGKGROUND_METHOD = "drawWorldBackground";
     private static final String DRAW_WORLD_BAGKGROUND_METHOD_OBF = "func_146270_b";
+    
+    private static final String BLUR_MAIN_CLASS = "com/tterrag/blurbg/BlurBG";
+    private static final String COLOR_HOOK_METHOD_NAME = "getBackgroundColor";
+    private static final String COLOR_HOOK_METHOD_DESC = "(Z)I";
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
@@ -44,9 +49,17 @@ public class BlurBGTransformer implements IClassTransformer {
 //                            break;
 //                        }
                         if (next.getOpcode() == Opcodes.LDC) {
-                            // TODO make this configurable? 
                             System.out.println("Modifying GUI background darkness... ");
-                            ((LdcInsnNode)next).cst = ((LdcInsnNode)next.getNext()).cst = 0x66000000;
+                            AbstractInsnNode colorHook = new MethodInsnNode(Opcodes.INVOKESTATIC, BLUR_MAIN_CLASS, COLOR_HOOK_METHOD_NAME, COLOR_HOOK_METHOD_DESC, false);
+                            AbstractInsnNode colorHook2 = colorHook.clone(null);
+                            
+                            // Replace LDC with hooks
+                            m.instructions.set(next, colorHook);
+                            m.instructions.set(colorHook.getNext(), colorHook2);
+
+                            // Load boolean constants for method param
+                            m.instructions.insertBefore(colorHook, new InsnNode(Opcodes.ICONST_0));
+                            m.instructions.insertBefore(colorHook2, new InsnNode(Opcodes.ICONST_1));
                             break;
                         }
                     }
