@@ -9,8 +9,8 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-group = 'com.tterrag.blurbg'
-archivesBaseName = "BlurBG"
+group = 'com.tterrag.blur'
+archivesBaseName = "Blur"
 version = "MC${minecraft_version}-${mod_version}-${System.getenv().BUILD_NUMBER}"
 
 sourceCompatibility = '1.8'
