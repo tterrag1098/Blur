@@ -11,7 +11,7 @@ apply plugin: 'forge'
 
 group = 'com.tterrag.blur'
 archivesBaseName = "Blur"
-version = "${mod_version}-${System.getenv().BUILD_NUMBER}"
+version = "MC${minecraft_version}-${mod_version}-${System.getenv().BUILD_NUMBER}"
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
