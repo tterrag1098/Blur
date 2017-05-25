@@ -1,7 +1,7 @@
 [
 {
-  "modid": "blurbg",
-  "name": "BlurBG",
+  "modid": "blur",
+  "name": "Blur",
   "description": "Adds a blurry background when viewing GUIs",
   "version": "${version}",
   "mcversion": "${mcversion}",
