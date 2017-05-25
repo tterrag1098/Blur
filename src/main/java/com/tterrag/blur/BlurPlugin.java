@@ -2,7 +2,7 @@ package com.tterrag.blur;
 
 import java.util.Map;
 
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.SortingIndex(Integer.MAX_VALUE)
 public class BlurPlugin implements IFMLLoadingPlugin {

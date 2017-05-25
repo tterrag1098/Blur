@@ -15,22 +15,25 @@ import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.shader.Shader;
 import net.minecraft.client.shader.ShaderGroup;
+import net.minecraft.client.shader.ShaderLinkHelper;
 import net.minecraft.client.shader.ShaderUniform;
+import net.minecraft.client.util.JsonException;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
-@Mod(modid = MODID, name = MOD_NAME, version = VERSION, acceptedMinecraftVersions = "[1.9, 1.12)", clientSideOnly = true, guiFactory = "com.tterrag.blur.config.BlurGuiFactory")
+@Mod(modid = MODID, name = MOD_NAME, version = VERSION, acceptedMinecraftVersions = "[1.7, 1.8)", guiFactory = "com.tterrag.blur.config.BlurGuiFactory")
 public class Blur {
     
     public static final String MODID = "blur";
@@ -53,6 +56,7 @@ public class Blur {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
+        FMLCommonHandler.instance().bus().register(this);
         
         config = new Configuration(new File(event.getModConfigurationDirectory(), "blur.cfg"));
         saveConfig();
@@ -81,24 +85,25 @@ public class Blur {
     
     @SubscribeEvent
     public void onConfigChanged(OnConfigChangedEvent event) {
-        if (event.getModID().equals(MODID)) {
+        if (event.modID.equals(MODID)) {
             saveConfig();
         }
     }
     
-    @SuppressWarnings("null")
     @SubscribeEvent
-    public void onGuiChange(GuiOpenEvent event) {
+    public void onGuiChange(GuiOpenEvent event) throws JsonException {
         if (_listShaders == null) {
             _listShaders = ReflectionHelper.findField(ShaderGroup.class, "field_148031_d", "listShaders");
         }
-        if (Minecraft.getMinecraft().world != null) {
+        if (Minecraft.getMinecraft().theWorld != null && ShaderLinkHelper.getStaticShaderLinkHelper() != null) {
             EntityRenderer er = Minecraft.getMinecraft().entityRenderer;
-            if (!er.isShaderActive() && event.getGui() != null && !ArrayUtils.contains(blurExclusions, event.getGui().getClass().getName())) {
-                er.loadShader(new ResourceLocation("shaders/post/fade_in_blur.json"));
+            if (!er.isShaderActive() && event.gui != null && !ArrayUtils.contains(blurExclusions, event.gui.getClass().getName())) {
+                Minecraft mc = Minecraft.getMinecraft();
+                er.theShaderGroup = new ShaderGroup(mc.getTextureManager(), mc.getResourceManager(), mc.getFramebuffer(), new ResourceLocation("shaders/post/fade_in_blur.json"));
+                er.updateShaderGroupSize(mc.displayWidth, mc.displayHeight);
                 start = System.currentTimeMillis();
-            } else if (er.isShaderActive() && event.getGui() == null) {
-                er.stopUseShader();
+            } else if (er.isShaderActive() && event.gui == null) {
+                er.deactivateShader();
             }
         }
     }
@@ -107,7 +112,6 @@ public class Blur {
         return Math.min((System.currentTimeMillis() - start) / (float) fadeTime, 1);
     }
     
-    @SuppressWarnings("null")
     @SubscribeEvent
     public void onRenderTick(RenderTickEvent event) {
         if (event.phase == Phase.END && Minecraft.getMinecraft().currentScreen != null && Minecraft.getMinecraft().entityRenderer.isShaderActive()) {

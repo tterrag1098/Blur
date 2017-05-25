@@ -4,10 +4,10 @@ buildscript {
         maven { url = "http://files.minecraftforge.net/maven" }
         maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
-    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT' }
+    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT' }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'forge'
 
 group = 'com.tterrag.blur'
 archivesBaseName = "Blur"
@@ -18,11 +18,11 @@ targetCompatibility = '1.8'
 
 minecraft {
     version = "${minecraft_version}-${forge_version}"
-	mappings = 'stable_29'
+	mappings = 'stable_12'
 	
     runDir = 'run'
 
-	clientJvmArgs += '-Dfml.coreMods.load=com.tterrag.blur.BlurPlugin'
+	//clientJvmArgs += '-Dfml.coreMods.load=com.tterrag.blur.BlurPlugin'
 	
 	replace "@VERSION@", project.version
 }

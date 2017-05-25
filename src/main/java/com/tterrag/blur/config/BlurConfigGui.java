@@ -8,8 +8,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.client.config.GuiConfig;
-import net.minecraftforge.fml.client.config.GuiConfigEntries;
+import cpw.mods.fml.client.config.GuiConfig;
+import cpw.mods.fml.client.config.GuiConfigEntries;
 
 public class BlurConfigGui extends GuiConfig {
 
@@ -21,10 +21,9 @@ public class BlurConfigGui extends GuiConfig {
     public void initGui() {
         super.initGui();
         this.entryList = new GuiConfigEntries(this, mc) {
-            @SuppressWarnings({ "unused", "null" })
             @Override
             protected void drawContainerBackground(@Nonnull Tessellator tessellator) {
-                if (mc.world == null) {
+                if (mc.theWorld == null) {
                     super.drawContainerBackground(tessellator);
                 }
             }
