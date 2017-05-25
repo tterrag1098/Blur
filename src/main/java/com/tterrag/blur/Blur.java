@@ -67,12 +67,12 @@ public class Blur {
         fadeTime = config.getInt("fadeTime", Configuration.CATEGORY_GENERAL, 200, 0, Integer.MAX_VALUE, "The time it takes for the blur to fade in, in ms.");
         
         colorFirst = Integer.parseUnsignedInt(
-                config.getString("gradientStartColor",  Configuration.CATEGORY_GENERAL, "66000000", "The start color of the background gradient. Given in ARGB hex."),
+                config.getString("gradientStartColor",  Configuration.CATEGORY_GENERAL, "75000000", "The start color of the background gradient. Given in ARGB hex."),
                 16
         );
         
         colorSecond = Integer.parseUnsignedInt(
-                config.getString("gradientEndColor",    Configuration.CATEGORY_GENERAL, "66000000", "The end color of the background gradient. Given in ARGB hex."),
+                config.getString("gradientEndColor",    Configuration.CATEGORY_GENERAL, "75000000", "The end color of the background gradient. Given in ARGB hex."),
                 16
         );
         
