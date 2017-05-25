@@ -27,7 +27,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-@Mod(modid = "blurbg", name = "BlurBG", version = "@VERSION@", acceptedMinecraftVersions = "[1.9, 1.12)")
+@Mod(modid = "blurbg", name = "BlurBG", version = "@VERSION@", acceptedMinecraftVersions = "[1.9, 1.12)", clientSideOnly = true)
 public class BlurBG {
     
     @Instance
@@ -51,7 +51,7 @@ public class BlurBG {
                 GuiChat.class.getName(),
         }, "A list of classes to be excluded from the blur shader.");
         
-        fadeTime = config.getInt("fadeTime", Configuration.CATEGORY_GENERAL, 300, 0, Integer.MAX_VALUE, "The time it takes for the blur to fade in, in ms.");
+        fadeTime = config.getInt("fadeTime", Configuration.CATEGORY_GENERAL, 200, 0, Integer.MAX_VALUE, "The time it takes for the blur to fade in, in ms.");
         
         colorFirst = Integer.parseUnsignedInt(
                 config.getString("gradientStartColor",  Configuration.CATEGORY_GENERAL, "66000000", "The start color of the background gradient. Given in ARGB hex."),
