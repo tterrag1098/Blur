@@ -4,7 +4,7 @@
     ],
     "passes": [
         {
-            "name": "blur",
+            "name": "fade_in_blur",
             "intarget": "minecraft:main",
             "outtarget": "swap",
             "uniforms": [
@@ -19,7 +19,7 @@
             ]
         },
         {
-            "name": "blur",
+            "name": "fade_in_blur",
             "intarget": "swap",
             "outtarget": "minecraft:main",
             "uniforms": [
@@ -34,7 +34,7 @@
             ]
         },
         {
-            "name": "blur",
+            "name": "fade_in_blur",
             "intarget": "minecraft:main",
             "outtarget": "swap",
             "uniforms": [
@@ -49,7 +49,7 @@
             ]
         },
         {
-            "name": "blur",
+            "name": "fade_in_blur",
             "intarget": "swap",
             "outtarget": "minecraft:main",
             "uniforms": [
