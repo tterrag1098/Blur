@@ -129,7 +129,7 @@ public class Blur {
     
     public static int getBackgroundColor(boolean second) {
         int color = second ? instance.colorSecond : instance.colorFirst;
-        int a = color >> 24;
+        int a = color >>> 24;
         int r = (color >> 16) & 0xFF;
         int b = (color >> 8) & 0xFF;
         int g = color & 0xFF;
