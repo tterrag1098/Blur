@@ -6,17 +6,17 @@
 	},
 	"lite": {
 		"name": "Lite",
-		"radius": 7,
+		"radius": 8,
 		"description": "Less passes, weaker effect, greater performance."
 	},
 	"strong": {
 		"name": "Strong",
-		"radius": 40,
+		"radius": 32,
 		"description" : "More passes, stronger effect, lesser performance."
 	},
 	"ultra_strong": {
 		"name": "Ultra Strong",
-		"radius": 100,
+		"radius": 64,
 		"description": "Too many passes, strongest effect, worst performance. It's like having Vaseline in your eyes."
 	}
 }
