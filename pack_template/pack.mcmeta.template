@@ -1,0 +1,7 @@
+{
+  "pack": {
+    "_comment":     "This pack was made for Blur version @mod_version@",
+    "pack_format":  @pack_version@,
+    "description":  "@description@"
+  }
+}

@@ -1,0 +1,22 @@
+{
+	"ultra_lite": {
+		"name": "Ultra Lite",
+		"radius": 2,
+		"description": "Least passes, weakest effect, greatest performance. It's like having a smudge on your glasses."
+	},
+	"lite": {
+		"name": "Lite",
+		"radius": 7,
+		"description": "Less passes, weaker effect, greater performance."
+	},
+	"strong": {
+		"name": "Strong",
+		"radius": 40,
+		"description" : "More passes, stronger effect, lesser performance."
+	},
+	"ultra_strong": {
+		"name": "Ultra Strong",
+		"radius": 100,
+		"description": "Too many passes, strongest effect, worst performance. It's like having Vaseline in your eyes."
+	}
+}
