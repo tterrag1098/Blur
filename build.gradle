@@ -52,3 +52,41 @@ jar.manifest {
     attributes 'FMLCorePluginContainsFMLMod': 'true'
 }
 
+import org.apache.tools.ant.filters.ReplaceTokens
+import groovy.json.JsonSlurper
+
+task createResourcePacks {
+	def inputFile = new File("resource_packs.json")
+	def json = new JsonSlurper().parseText(inputFile.text)
+	json.each {
+		def pack_id 	= it.key
+		def pack_name   = it.value.name
+		def pack_desc 	= it.value.description
+		def pack_radius = it.value.radius
+		
+		def taskName = "createPack" + pack_id.capitalize();
+		task "${taskName}" (type: Zip) {
+			from ('pack_template') {		
+				filter(ReplaceTokens, tokens: [
+					mod_version:	project.version.toString(),
+					pack_version: 	'3',
+					description:	pack_desc.toString(),
+					radius: 		pack_radius.toString()
+				])
+				
+				rename(/(.+)\.template/, '$1')
+			}
+			
+			from ('pack_icons') {
+				include "${pack_id}.png"
+				rename '.+', 'pack.png'
+			}
+			
+			baseName = "Blur " + pack_name
+		}
+		
+		createResourcePacks.finalizedBy taskName
+	}
+}
+
+tasks.build.dependsOn createResourcePacks
