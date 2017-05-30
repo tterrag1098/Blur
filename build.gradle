@@ -6,11 +6,14 @@ buildscript {
     }
     dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT' }
 }
+plugins {
+ 	id 'com.matthewprenger.cursegradle' version '1.0.8'
+}
 
 apply plugin: 'forge'
 
 boolean dev = System.getenv('RELEASE') == null || System.getenv('RELEASE').equals('false');
-project.buildnumber = System.getenv().BUILD_NUMBER ?: 'custom';
+ext.buildnumber = System.getenv().BUILD_NUMBER ?: 'custom';
 
 group = 'com.tterrag.blur'
 archivesBaseName = "Blur"
@@ -103,16 +106,15 @@ curseforge {
     }
 
     project {
-        id = project.projectId
+        id = project.project_id
         changelog = System.getenv('CHANGELOG') == null || System.getenv('CHANGELOG').equals('none') ? getChangelog() : System.getenv('CHANGELOG')
         changelogType = 'text'
-        releaseType = project.releaseType
+        releaseType = project.release_type
 		addGameVersion '1.9.4'
 		addGameVersion '1.11.2'
         mainArtifact(jar) {
             displayName = "Blur ${version} (MC 1.7.10)"
         }
-        addArtifact(apiJar)
     }
 }
 
