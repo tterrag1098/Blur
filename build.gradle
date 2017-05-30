@@ -114,8 +114,6 @@ curseforge {
         	changelogType = 'text'
         }
         releaseType = project.release_type
-		addGameVersion '1.9.4'
-		addGameVersion '1.11.2'
         mainArtifact(jar) {
             displayName = "Blur ${mod_version} (MC 1.7.10)"
         }
