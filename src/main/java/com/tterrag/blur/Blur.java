@@ -4,16 +4,20 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.base.Throwables;
 import com.tterrag.blur.util.ShaderResourcePack;
 
 import static com.tterrag.blur.Blur.*;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.resources.IResourcePack;
+import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.client.shader.Shader;
 import net.minecraft.client.shader.ShaderGroup;
 import net.minecraft.client.shader.ShaderUniform;
@@ -49,20 +53,26 @@ public class Blur {
     private long start;
     private int fadeTime;
     
-    public int radius;
+    public int radius; // Store default so we don't trigger an extra reload
     private int colorFirst, colorSecond;
     
+    @Nonnull
+    private ShaderResourcePack dummyPack = new ShaderResourcePack();
+    
+    @SuppressWarnings("unchecked")
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
         
         // Add our dummy resourcepack
-        ((List<IResourcePack>)ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "field_110449_ao", "defaultResourcePacks")).add(new ShaderResourcePack());
+        ((List<IResourcePack>)ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "field_110449_ao", "defaultResourcePacks")).add(dummyPack);
+        ((SimpleReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(dummyPack);
         
         config = new Configuration(new File(event.getModConfigurationDirectory(), "blur.cfg"));
         saveConfig();
     }
     
+    @SuppressWarnings("null")
     private void saveConfig() {
         
         blurExclusions = config.getStringList("guiExclusions", Configuration.CATEGORY_GENERAL, new String[] {
@@ -71,7 +81,15 @@ public class Blur {
         
         fadeTime = config.getInt("fadeTime", Configuration.CATEGORY_GENERAL, 200, 0, Integer.MAX_VALUE, "The time it takes for the blur to fade in, in ms.");
         
-        radius = config.getInt("radius", Configuration.CATEGORY_GENERAL, 12, 1, 100, "The radius of the blur effect. This controls how \"strong\" the blur is.");
+        int r = config.getInt("radius", Configuration.CATEGORY_GENERAL, 12, 1, 100, "The radius of the blur effect. This controls how \"strong\" the blur is.");
+        if (r != radius) {
+            radius = r;
+            dummyPack.onResourceManagerReload(Minecraft.getMinecraft().getResourceManager());
+            if (Minecraft.getMinecraft().world != null) {
+                Minecraft.getMinecraft().entityRenderer.stopUseShader();
+            }
+        }
+
         colorFirst = Integer.parseUnsignedInt(
                 config.getString("gradientStartColor",  Configuration.CATEGORY_GENERAL, "75000000", "The start color of the background gradient. Given in ARGB hex."),
                 16
