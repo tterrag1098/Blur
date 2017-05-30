@@ -17,10 +17,10 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.resources.data.IMetadataSection;
-import net.minecraft.client.resources.data.MetadataSerializer;
+import net.minecraft.client.resources.data.IMetadataSerializer;
 import net.minecraft.client.resources.data.PackMetadataSection;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentString;
 
 public class ShaderResourcePack implements IResourcePack, IResourceManagerReloadListener {
 	
@@ -62,10 +62,9 @@ public class ShaderResourcePack implements IResourcePack, IResourceManagerReload
 		return ImmutableSet.of("minecraft");
 	}
 
-	@SuppressWarnings("unchecked")
     @Override
-	public <T extends IMetadataSection> T getPackMetadata(MetadataSerializer metadataSerializer, String metadataSectionName) throws IOException {
-	    return (T) new PackMetadataSection(new TextComponentString("Blur's default shaders"), 3);
+	public IMetadataSection getPackMetadata(IMetadataSerializer metadataSerializer, String metadataSectionName) throws IOException {
+	    return new PackMetadataSection(new ChatComponentText("Blur's default shaders"), 3);
     }
 
 	@Override

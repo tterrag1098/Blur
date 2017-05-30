@@ -76,7 +76,6 @@ public class Blur {
         saveConfig();
     }
     
-    @SuppressWarnings("null")
     private void saveConfig() {
         
         blurExclusions = config.getStringList("guiExclusions", Configuration.CATEGORY_GENERAL, new String[] {
@@ -89,8 +88,8 @@ public class Blur {
         if (r != radius) {
             radius = r;
             dummyPack.onResourceManagerReload(Minecraft.getMinecraft().getResourceManager());
-            if (Minecraft.getMinecraft().world != null) {
-                Minecraft.getMinecraft().entityRenderer.stopUseShader();
+            if (Minecraft.getMinecraft().theWorld != null) {
+                Minecraft.getMinecraft().entityRenderer.deactivateShader();
             }
         }
 
