@@ -13,11 +13,7 @@ plugins {
 apply plugin: 'forge'
 
 boolean dev = System.getenv('RELEASE') == null || System.getenv('RELEASE').equals('false');
-<<<<<<< Updated upstream
 ext.buildnumber = System.getenv().BUILD_NUMBER ?: 'custom';
-=======
-ext.buildnumber = System.getenv().BUILD_NUMBER ?: 'custom'
->>>>>>> Stashed changes
 
 group = 'com.tterrag.blur'
 archivesBaseName = "Blur"
