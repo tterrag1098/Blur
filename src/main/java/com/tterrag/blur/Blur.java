@@ -118,10 +118,11 @@ public class Blur {
         }
         if (Minecraft.getMinecraft().world != null) {
             EntityRenderer er = Minecraft.getMinecraft().entityRenderer;
-            if (!er.isShaderActive() && event.getGui() != null && !ArrayUtils.contains(blurExclusions, event.getGui().getClass().getName())) {
+            boolean excluded = event.getGui() == null || ArrayUtils.contains(blurExclusions, event.getGui().getClass().getName());
+            if (!er.isShaderActive() && !excluded) {
                 er.loadShader(new ResourceLocation("shaders/post/fade_in_blur.json"));
                 start = System.currentTimeMillis();
-            } else if (er.isShaderActive() && event.getGui() == null) {
+            } else if (er.isShaderActive() && excluded) {
                 er.stopUseShader();
             }
         }
