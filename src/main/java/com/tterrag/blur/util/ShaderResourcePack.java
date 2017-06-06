@@ -62,10 +62,13 @@ public class ShaderResourcePack implements IResourcePack, IResourceManagerReload
 		return ImmutableSet.of("minecraft");
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "null" })
     @Override
 	public <T extends IMetadataSection> T getPackMetadata(MetadataSerializer metadataSerializer, String metadataSectionName) throws IOException {
-	    return (T) new PackMetadataSection(new TextComponentString("Blur's default shaders"), 3);
+	    if ("pack".equals(metadataSectionName)) {
+	        return (T) new PackMetadataSection(new TextComponentString("Blur's default shaders"), 3);
+	    }
+	    return null;
     }
 
 	@Override
