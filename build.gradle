@@ -110,12 +110,13 @@ curseforge {
         changelogType = 'html'
         changelog = System.getenv('CHANGELOG')
         if (changelog == null || 'none'.equals(changelog)) {
-        	changelog = getChangelog()
+        	changelog = getChangelog() ?: ''
         	changelogType = 'text'
         }
         releaseType = project.release_type
 		addGameVersion '1.9.4'
 		addGameVersion '1.11.2'
+		addGameVersion '1.12'
         mainArtifact(jar) {
             displayName = "Blur ${mod_version}"
         }

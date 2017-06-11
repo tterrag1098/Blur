@@ -27,4 +27,15 @@ public class BlurGuiFactory implements IModGuiFactory {
         return null;
     }
 
+//  1.12
+//	@Override
+	public boolean hasConfigGui() {
+		return true;
+	}
+	
+//  1.12
+//	@Override
+	public GuiScreen createConfigGui(GuiScreen parentScreen) {
+		return new BlurConfigGui(parentScreen);
+	}
 }
