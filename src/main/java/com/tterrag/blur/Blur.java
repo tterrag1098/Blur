@@ -60,19 +60,21 @@ public class Blur {
     private ShaderResourcePack dummyPack = new ShaderResourcePack();
     
     @SuppressWarnings("unchecked")
+    public Blur() {
+        ((List<IResourcePack>)ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "field_110449_ao", "defaultResourcePacks")).add(dummyPack);
+    }
+    
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
         
         // Add our dummy resourcepack
-        ((List<IResourcePack>)ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "field_110449_ao", "defaultResourcePacks")).add(dummyPack);
         ((SimpleReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(dummyPack);
         
         config = new Configuration(new File(event.getModConfigurationDirectory(), "blur.cfg"));
         saveConfig();
     }
     
-    @SuppressWarnings("null")
     private void saveConfig() {
         
         blurExclusions = config.getStringList("guiExclusions", Configuration.CATEGORY_GENERAL, new String[] {
@@ -110,7 +112,6 @@ public class Blur {
         }
     }
     
-    @SuppressWarnings("null")
     @SubscribeEvent
     public void onGuiChange(GuiOpenEvent event) {
         if (_listShaders == null) {
@@ -132,7 +133,6 @@ public class Blur {
         return Math.min((System.currentTimeMillis() - start) / (float) fadeTime, 1);
     }
     
-    @SuppressWarnings("null")
     @SubscribeEvent
     public void onRenderTick(RenderTickEvent event) {
         if (event.phase == Phase.END && Minecraft.getMinecraft().currentScreen != null && Minecraft.getMinecraft().entityRenderer.isShaderActive()) {
