@@ -117,6 +117,7 @@ curseforge {
 		addGameVersion '1.9.4'
 		addGameVersion '1.11.2'
 		addGameVersion '1.12'
+		addGameVersion '1.12.1'
         mainArtifact(jar) {
             displayName = "Blur ${mod_version}"
         }
