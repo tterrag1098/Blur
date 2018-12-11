@@ -52,7 +52,12 @@ public class Blur implements ModInitializer {
     public static Blur instance;
     
     public Blur() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
-    	Field _rps = MinecraftClient.class.getDeclaredField("resourcePackContainerManager");
+    	Field _rps;
+    	try {
+    		_rps = MinecraftClient.class.getDeclaredField("field_1715");
+    	} catch (NoSuchFieldException e) {
+    		_rps = MinecraftClient.class.getDeclaredField("resourcePackContainerManager");
+    	}
     	_rps.setAccessible(true);
     	ResourcePackContainerManager<ClientResourcePackContainer> rps = (ResourcePackContainerManager<ClientResourcePackContainer>)_rps.get(MinecraftClient.getInstance());
     	rps.addCreator(new ResourcePackCreator() {
