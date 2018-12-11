@@ -1,81 +1,85 @@
 package com.tterrag.blur;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.base.Throwables;
+import com.tterrag.blur.mixin.MixinWorldRenderer;
 import com.tterrag.blur.util.ShaderResourcePack;
 
-import static com.tterrag.blur.Blur.*;
+import net.fabricmc.api.ModInitializer;
+import net.minecraft.class_279;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.GlUniform;
+import net.minecraft.client.gl.Shader;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.resource.ClientResourcePackContainer;
+import net.minecraft.resource.ResourcePackCompatibility;
+import net.minecraft.resource.ResourcePackContainer;
+import net.minecraft.resource.ResourcePackContainer.Factory;
+import net.minecraft.resource.ResourcePackContainer.SortingDirection;
+import net.minecraft.resource.ResourcePackContainerManager;
+import net.minecraft.resource.ResourcePackCreator;
+import net.minecraft.text.StringTextComponent;
+import net.minecraft.util.Identifier;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.client.resources.IResourcePack;
-import net.minecraft.client.resources.SimpleReloadableResourceManager;
-import net.minecraft.client.shader.Shader;
-import net.minecraft.client.shader.ShaderGroup;
-import net.minecraft.client.shader.ShaderUniform;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.GuiOpenEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-
-@Mod(modid = MODID, name = MOD_NAME, version = VERSION, acceptedMinecraftVersions = "[1.9, 1.13)", clientSideOnly = true, guiFactory = "com.tterrag.blur.config.BlurGuiFactory")
-public class Blur {
+public class Blur implements ModInitializer {
     
     public static final String MODID = "blur";
     public static final String MOD_NAME = "Blur";
     public static final String VERSION = "@VERSION@";
-    
-    @Instance
-    public static Blur instance;
-    
-    public Configuration config;
-    
-    private String[] blurExclusions;
+
+    private String[] blurExclusions = new String[] {
+    	"net.minecraft.client.gui.ingame.ChatGui"
+    };
 
     private Field _listShaders;
     private long start;
-    private int fadeTime;
+    private int fadeTime = 250;
     
-    public int radius; // Store default so we don't trigger an extra reload
-    private int colorFirst, colorSecond;
+    public int radius = 10; // Store default so we don't trigger an extra reload
+    public int colorFirst, colorSecond;
     
     @Nonnull
     private ShaderResourcePack dummyPack = new ShaderResourcePack();
     
-    @SuppressWarnings("unchecked")
-    public Blur() {
-        ((List<IResourcePack>)ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "field_110449_ao", "defaultResourcePacks")).add(dummyPack);
-    }
+    public static Blur instance;
     
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(this);
-        
+    public Blur() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+    	Field _rps = MinecraftClient.class.getDeclaredField("resourcePackContainerManager");
+    	_rps.setAccessible(true);
+    	ResourcePackContainerManager<ClientResourcePackContainer> rps = (ResourcePackContainerManager<ClientResourcePackContainer>)_rps.get(MinecraftClient.getInstance());
+    	rps.addCreator(new ResourcePackCreator() {
+    		
+    		@Override
+    		public <T extends ResourcePackContainer> void registerContainer(Map<String, T> var1, Factory<T> factory) {
+
+    	      T var3 = (T) new ClientResourcePackContainer("blur", true, () -> dummyPack, new StringTextComponent(dummyPack.getName()), new StringTextComponent(dummyPack.getName()), ResourcePackCompatibility.COMPATIBLE, SortingDirection.BOTTOM, true, null);
+    	      if (var3 != null) {
+    	         var1.put("blur", var3);
+    	      }
+    		}
+    	});
+      
+    	instance = this; 
+    }
+
+    @Override
+    public void onInitialize() {
         // Add our dummy resourcepack
-        ((SimpleReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(dummyPack);
+//        ((ReloadableResourceManager)MinecraftClient.getInstance().getResourceManager()).addListener(dummyPack);
         
-        config = new Configuration(new File(event.getModConfigurationDirectory(), "blur.cfg"));
-        saveConfig();
+//        config = new Configuration(new File(event.getModConfigurationDirectory(), "blur.cfg"));
+//        saveConfig();
     }
     
-    private void saveConfig() {
+/*    private void saveConfig() {
         
         blurExclusions = config.getStringList("guiExclusions", Configuration.CATEGORY_GENERAL, new String[] {
                 GuiChat.class.getName(),
@@ -103,28 +107,32 @@ public class Blur {
         );
         
         config.save();
-    }
+    }*/
     
-    @SubscribeEvent
+/*    @SubscribeEvent
     public void onConfigChanged(OnConfigChangedEvent event) {
         if (event.getModID().equals(MODID)) {
             saveConfig();
         }
     }
-    
-    @SubscribeEvent
-    public void onGuiChange(GuiOpenEvent event) {
+    */
+    public void onGuiChange(Gui newGui) {
         if (_listShaders == null) {
-            _listShaders = ReflectionHelper.findField(ShaderGroup.class, "field_148031_d", "listShaders");
+            try {
+				_listShaders = class_279.class.getDeclaredField("field_1497");
+				_listShaders.setAccessible(true);
+			} catch (NoSuchFieldException | SecurityException e) {
+				throw new RuntimeException(e);
+			}
         }
-        if (Minecraft.getMinecraft().world != null) {
-            EntityRenderer er = Minecraft.getMinecraft().entityRenderer;
-            boolean excluded = event.getGui() == null || ArrayUtils.contains(blurExclusions, event.getGui().getClass().getName());
-            if (!er.isShaderActive() && !excluded) {
-                er.loadShader(new ResourceLocation("shaders/post/fade_in_blur.json"));
+        if (MinecraftClient.getInstance().world != null) {
+            WorldRenderer er = MinecraftClient.getInstance().worldRenderer;
+            boolean excluded = newGui == null || ArrayUtils.contains(blurExclusions, newGui.getClass().getName());
+            if (!er.method_3175() && !excluded) {
+                ((MixinWorldRenderer)er).invokeLoadShader(new Identifier("shaders/post/fade_in_blur.json"));
                 start = System.currentTimeMillis();
-            } else if (er.isShaderActive() && excluded) {
-                er.stopUseShader();
+            } else if (er.method_3175() && excluded) {
+                er.method_3207();
             }
         }
     }
@@ -133,17 +141,16 @@ public class Blur {
         return Math.min((System.currentTimeMillis() - start) / (float) fadeTime, 1);
     }
     
-    @SubscribeEvent
-    public void onRenderTick(RenderTickEvent event) {
-        if (event.phase == Phase.END && Minecraft.getMinecraft().currentScreen != null && Minecraft.getMinecraft().entityRenderer.isShaderActive()) {
-            ShaderGroup sg = Minecraft.getMinecraft().entityRenderer.getShaderGroup();
+    public void onPostRenderTick() {
+        if (MinecraftClient.getInstance().currentGui != null && MinecraftClient.getInstance().worldRenderer.method_3175()) {
+            class_279 sg = MinecraftClient.getInstance().worldRenderer.method_3183();
             try {
                 @SuppressWarnings("unchecked")
                 List<Shader> shaders = (List<Shader>) _listShaders.get(sg);
                 for (Shader s : shaders) {
-                    ShaderUniform su = s.getShaderManager().getShaderUniform("Progress");
+                    GlUniform su = s.method_1295().getUniformByName("Progress");
                     if (su != null) {
-                        su.set(getProgress());
+                        su.method_1251(getProgress());
                     }
                 }
             } catch (IllegalArgumentException | IllegalAccessException e) {
@@ -152,8 +159,8 @@ public class Blur {
         }
     }
     
-    public static int getBackgroundColor(boolean second) {
-        int color = second ? instance.colorSecond : instance.colorFirst;
+    public int getBackgroundColor(boolean second) {
+        int color = second ? colorSecond : colorFirst;
         int a = color >>> 24;
         int r = (color >> 16) & 0xFF;
         int b = (color >> 8) & 0xFF;

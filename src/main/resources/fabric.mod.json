@@ -1,0 +1,10 @@
+{
+  "id": "blur",
+  "name": "Blur",
+  "version": "1.0.0",
+  "side": "client",
+  "initializer": "com.tterrag.blur.Blur",
+  "mixins": {
+  	"client": "blur.client.json"
+  }
+}

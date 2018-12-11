@@ -1,16 +1,17 @@
 buildscript {
-    repositories {
-        mavenCentral()
-        maven { url = "http://files.minecraftforge.net/maven" }
-        maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
-    }
-    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT' }
+	repositories {
+		jcenter()
+		maven { url = 'http://maven.modmuss50.me' }
+	}
+	dependencies {
+		classpath 'net.fabricmc:fabric-loom:0.1.0-SNAPSHOT'
+	}
 }
 plugins {
  	id 'com.matthewprenger.cursegradle' version '1.0.9'
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'fabric-loom'
 
 boolean dev = System.getenv('RELEASE') == null || System.getenv('RELEASE').equals('false');
 ext.buildnumber = System.getenv().BUILD_NUMBER ?: 'custom';
@@ -23,39 +24,17 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 minecraft {
-    version = "${minecraft_version}-${forge_version}"
-	mappings = 'stable_29'
-	
-    runDir = 'run'
-
-	clientJvmArgs += '-Dfml.coreMods.load=com.tterrag.blur.BlurPlugin'
-	
-	replace "@VERSION@", project.version
 }
 
-processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+dependencies {
+	minecraft "com.mojang:minecraft:18w49a"
+	mappings "net.fabricmc:yarn:18w49a.10"
+	modCompile "net.fabricmc:fabric-loader:0.2.0.62"
 
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include '**/*.info'
-        include '**/*.properties'
-
-        // replace version and mcversion
-        expand 'version': project.version, 'mcversion': project.minecraft.version
-    }
-
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*.info'
-        exclude '**/*.properties'
-    }
-}
-
-jar.manifest {
-    attributes 'FMLCorePlugin': 'com.tterrag.blur.BlurPlugin'
-    attributes 'FMLCorePluginContainsFMLMod': 'true'
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	modCompile "net.fabricmc:fabric:0.1.0.37"
+	
+	implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
