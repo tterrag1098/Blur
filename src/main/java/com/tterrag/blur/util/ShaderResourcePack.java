@@ -25,15 +25,15 @@ import net.minecraft.text.StringTextComponent;
 import net.minecraft.util.Identifier;
 
 public class ShaderResourcePack implements ResourcePack, ResourceReloadListener {
-	
-	protected boolean validPath(Identifier location) {
-		return location.getNamespace().equals("minecraft") && location.getPath().startsWith("shaders/");
-	}
-	
-	private final Map<Identifier, String> loadedData = new HashMap<>();
+    
+    protected boolean validPath(Identifier location) {
+        return location.getNamespace().equals("minecraft") && location.getPath().startsWith("shaders/");
+    }
+    
+    private final Map<Identifier, String> loadedData = new HashMap<>();
 
-	@Override
-	public InputStream open(ResourceType type, Identifier location) throws IOException {
+    @Override
+    public InputStream open(ResourceType type, Identifier location) throws IOException {
         if (type == ResourceType.ASSETS && validPath(location)) {
             String s = loadedData.computeIfAbsent(location, loc -> {
                 InputStream in = Blur.class.getResourceAsStream("/" + location.getPath());
@@ -52,47 +52,47 @@ public class ShaderResourcePack implements ResourcePack, ResourceReloadListener 
             return new ByteArrayInputStream(s.getBytes());
         }
         throw new FileNotFoundException(location.toString());
-	}
-
-	@Override
-	public boolean contains(ResourceType type, Identifier location) {
-		return type == ResourceType.ASSETS && validPath(location) && Blur.class.getResource("/" + location.getPath()) != null;
-	}
-
-	@Override
-	public Set<String> getNamespaces(ResourceType type) {
-		return ImmutableSet.of("minecraft");
-	}
-
-	@SuppressWarnings({ "unchecked", "null" })
-    @Override
-	public <T> T parseMetadata(ResourceMetadataReader<T> var1) throws IOException {
-	    if ("pack".equals(var1.getKey())) {
-	        return (T) new PackResourceMetadata(new StringTextComponent("Blur's default shaders"), 4);
-	    }
-	    return null;
     }
 
-	@Override
-	public String getName() {
-		return "Blur Shaders";
-	}
-	
-	@Override
-	public void onResourceReload(ResourceManager resourceManager) {
-	    loadedData.clear();
-	}
+    @Override
+    public boolean contains(ResourceType type, Identifier location) {
+        return type == ResourceType.ASSETS && validPath(location) && Blur.class.getResource("/" + location.getPath()) != null;
+    }
 
-	@Override
-	public void close() throws IOException {}
+    @Override
+    public Set<String> getNamespaces(ResourceType type) {
+        return ImmutableSet.of("minecraft");
+    }
 
-	@Override
-	public InputStream openRoot(String var1) throws IOException {
-		return Blur.class.getResourceAsStream("/assets/blur/" + var1);
-	}
+    @SuppressWarnings({ "unchecked", "null" })
+    @Override
+    public <T> T parseMetadata(ResourceMetadataReader<T> var1) throws IOException {
+        if ("pack".equals(var1.getKey())) {
+            return (T) new PackResourceMetadata(new StringTextComponent("Blur's default shaders"), 4);
+        }
+        return null;
+    }
 
-	@Override
-	public Collection<Identifier> findResources(ResourceType var1, String var2, int var3, Predicate<String> var4) {
-		return Collections.emptyList();
-	}
+    @Override
+    public String getName() {
+        return "Blur Shaders";
+    }
+    
+    @Override
+    public void onResourceReload(ResourceManager resourceManager) {
+        loadedData.clear();
+    }
+
+    @Override
+    public void close() throws IOException {}
+
+    @Override
+    public InputStream openRoot(String var1) throws IOException {
+        return Blur.class.getResourceAsStream("/assets/blur/" + var1);
+    }
+
+    @Override
+    public Collection<Identifier> findResources(ResourceType var1, String var2, int var3, Predicate<String> var4) {
+        return Collections.emptyList();
+    }
 }

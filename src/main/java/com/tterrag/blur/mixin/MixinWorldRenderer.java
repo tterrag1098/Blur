@@ -8,8 +8,8 @@ import net.minecraft.util.Identifier;
 
 @Mixin(WorldRenderer.class)
 public interface MixinWorldRenderer {
-	
-	@Invoker
-	void invokeLoadShader(Identifier loc);
+    
+    @Invoker
+    void invokeLoadShader(Identifier loc);
 
 }

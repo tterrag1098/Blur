@@ -40,7 +40,7 @@ public class Blur implements ModInitializer {
     public static final String VERSION = "@VERSION@";
 
     private String[] blurExclusions = new String[] {
-    	"net.minecraft.client.gui.ingame.ChatGui"
+        "net.minecraft.client.gui.ingame.ChatGui"
     };
 
     private Field _listShaders;
@@ -54,36 +54,35 @@ public class Blur implements ModInitializer {
     private ShaderResourcePack dummyPack = new ShaderResourcePack();
     
     public static Blur instance;
-    
-    public Blur() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
-    	ResourcePackContainerManager<ClientResourcePackContainer> rps = ReflectionHelper.getValue(MinecraftClient.class, MinecraftClient.getInstance(), "field_1715", "resourcePackContainerManager");
-    	rps.addCreator(new ResourcePackCreator() {
 
-			@Override
-			public <T extends ResourcePackContainer> void registerContainer(Map<String, T> var1, Factory<T> factory) {
-				NativeImage img = null;
-				try {
-					img = NativeImage.fromInputStream(dummyPack.openRoot("pack.png"));
-				} catch (IOException e) {
-					LogManager.getLogger().error("Could not load blur's pack.png", e);
-				}
-				@SuppressWarnings("unchecked")
-				T var3 = (T) new ClientResourcePackContainer("blur", true, () -> dummyPack,
-						new StringTextComponent(dummyPack.getName()), new StringTextComponent("Default shaders for Blur"), 
-						ResourcePackCompatibility.COMPATIBLE, SortingDirection.BOTTOM, true, img);
-				if (var3 != null) {
-					var1.put("blur", var3);
-				}
-			}
-    	});
-      
-    	instance = this; 
+    public Blur() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+        ResourcePackContainerManager<ClientResourcePackContainer> rps = ReflectionHelper.getValue(MinecraftClient.class, MinecraftClient.getInstance(), "field_1715", "resourcePackContainerManager");
+        rps.addCreator(new ResourcePackCreator() {
+
+            @Override
+            public <T extends ResourcePackContainer> void registerContainer(Map<String, T> var1, Factory<T> factory) {
+                NativeImage img = null;
+                try {
+                    img = NativeImage.fromInputStream(dummyPack.openRoot("pack.png"));
+                } catch (IOException e) {
+                    LogManager.getLogger().error("Could not load blur's pack.png", e);
+                }
+                @SuppressWarnings("unchecked")
+                T var3 = (T) new ClientResourcePackContainer("blur", true, () -> dummyPack, new StringTextComponent(dummyPack.getName()), new StringTextComponent("Default shaders for Blur"),
+                        ResourcePackCompatibility.COMPATIBLE, SortingDirection.BOTTOM, true, img);
+                if (var3 != null) {
+                    var1.put("blur", var3);
+                }
+            }
+        });
+
+        instance = this;
     }
     
     @Override
     public void onInitialize() {}
     
-	public void registerReloadListeners(ReloadableResourceManager manager) {
+    public void registerReloadListeners(ReloadableResourceManager manager) {
         manager.addListener(dummyPack);
     }
     
@@ -126,7 +125,7 @@ public class Blur implements ModInitializer {
     */
     public void onGuiChange(Gui newGui) {
         if (_listShaders == null) {
-        	_listShaders = ReflectionHelper.getField(class_279.class, "field_1497");
+            _listShaders = ReflectionHelper.getField(class_279.class, "field_1497");
         }
         if (MinecraftClient.getInstance().world != null) {
             WorldRenderer er = MinecraftClient.getInstance().worldRenderer;

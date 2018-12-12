@@ -11,17 +11,17 @@ import net.minecraft.client.gui.Gui;
 @Mixin(Gui.class)
 public class MixinGui {
 
-	@ModifyConstant(
-			method = "drawBackground(I)V",
-			constant = @Constant(intValue = -1072689136))
-	public int getFirstBackgroundColor(int color) {
-		return Blur.instance.colorFirst;
-	}
-	
-	@ModifyConstant(
-			method = "drawBackground(I)V",
-			constant = @Constant(intValue = -804253680))
-	public int getSecondBackgroundColor(int color) {
-		return Blur.instance.colorSecond;
-	}
+    @ModifyConstant(
+            method = "drawBackground(I)V",
+            constant = @Constant(intValue = -1072689136))
+    public int getFirstBackgroundColor(int color) {
+        return Blur.instance.colorFirst;
+    }
+    
+    @ModifyConstant(
+            method = "drawBackground(I)V",
+            constant = @Constant(intValue = -804253680))
+    public int getSecondBackgroundColor(int color) {
+        return Blur.instance.colorSecond;
+    }
 }
