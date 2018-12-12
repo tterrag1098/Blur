@@ -1,5 +1,6 @@
 package com.tterrag.blur;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -7,9 +8,10 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.LogManager;
 
-import com.google.common.base.Throwables;
 import com.tterrag.blur.mixin.MixinWorldRenderer;
+import com.tterrag.blur.util.ReflectionHelper;
 import com.tterrag.blur.util.ShaderResourcePack;
 
 import net.fabricmc.api.ModInitializer;
@@ -20,6 +22,8 @@ import net.minecraft.client.gl.Shader;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.resource.ClientResourcePackContainer;
+import net.minecraft.client.texture.NativeImage;
+import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.resource.ResourcePackCompatibility;
 import net.minecraft.resource.ResourcePackContainer;
 import net.minecraft.resource.ResourcePackContainer.Factory;
@@ -52,36 +56,35 @@ public class Blur implements ModInitializer {
     public static Blur instance;
     
     public Blur() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
-    	Field _rps;
-    	try {
-    		_rps = MinecraftClient.class.getDeclaredField("field_1715");
-    	} catch (NoSuchFieldException e) {
-    		_rps = MinecraftClient.class.getDeclaredField("resourcePackContainerManager");
-    	}
-    	_rps.setAccessible(true);
-    	ResourcePackContainerManager<ClientResourcePackContainer> rps = (ResourcePackContainerManager<ClientResourcePackContainer>)_rps.get(MinecraftClient.getInstance());
+    	ResourcePackContainerManager<ClientResourcePackContainer> rps = ReflectionHelper.getValue(MinecraftClient.class, MinecraftClient.getInstance(), "field_1715", "resourcePackContainerManager");
     	rps.addCreator(new ResourcePackCreator() {
-    		
-    		@Override
-    		public <T extends ResourcePackContainer> void registerContainer(Map<String, T> var1, Factory<T> factory) {
 
-    	      T var3 = (T) new ClientResourcePackContainer("blur", true, () -> dummyPack, new StringTextComponent(dummyPack.getName()), new StringTextComponent(dummyPack.getName()), ResourcePackCompatibility.COMPATIBLE, SortingDirection.BOTTOM, true, null);
-    	      if (var3 != null) {
-    	         var1.put("blur", var3);
-    	      }
-    		}
+			@Override
+			public <T extends ResourcePackContainer> void registerContainer(Map<String, T> var1, Factory<T> factory) {
+				NativeImage img = null;
+				try {
+					img = NativeImage.fromInputStream(dummyPack.openRoot("pack.png"));
+				} catch (IOException e) {
+					LogManager.getLogger().error("Could not load blur's pack.png", e);
+				}
+				@SuppressWarnings("unchecked")
+				T var3 = (T) new ClientResourcePackContainer("blur", true, () -> dummyPack,
+						new StringTextComponent(dummyPack.getName()), new StringTextComponent("Default shaders for Blur"), 
+						ResourcePackCompatibility.COMPATIBLE, SortingDirection.BOTTOM, true, img);
+				if (var3 != null) {
+					var1.put("blur", var3);
+				}
+			}
     	});
       
     	instance = this; 
     }
-
+    
     @Override
-    public void onInitialize() {
-        // Add our dummy resourcepack
-//        ((ReloadableResourceManager)MinecraftClient.getInstance().getResourceManager()).addListener(dummyPack);
-        
-//        config = new Configuration(new File(event.getModConfigurationDirectory(), "blur.cfg"));
-//        saveConfig();
+    public void onInitialize() {}
+    
+	public void registerReloadListeners(ReloadableResourceManager manager) {
+        manager.addListener(dummyPack);
     }
     
 /*    private void saveConfig() {
@@ -123,12 +126,7 @@ public class Blur implements ModInitializer {
     */
     public void onGuiChange(Gui newGui) {
         if (_listShaders == null) {
-            try {
-				_listShaders = class_279.class.getDeclaredField("field_1497");
-				_listShaders.setAccessible(true);
-			} catch (NoSuchFieldException | SecurityException e) {
-				throw new RuntimeException(e);
-			}
+        	_listShaders = ReflectionHelper.getField(class_279.class, "field_1497");
         }
         if (MinecraftClient.getInstance().world != null) {
             WorldRenderer er = MinecraftClient.getInstance().worldRenderer;
@@ -159,7 +157,7 @@ public class Blur implements ModInitializer {
                     }
                 }
             } catch (IllegalArgumentException | IllegalAccessException e) {
-                Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         }
     }

@@ -75,7 +75,7 @@ public class ShaderResourcePack implements ResourcePack, ResourceReloadListener 
 
 	@Override
 	public String getName() {
-		return "Blur dummy resource pack";
+		return "Blur Shaders";
 	}
 	
 	@Override
@@ -88,12 +88,11 @@ public class ShaderResourcePack implements ResourcePack, ResourceReloadListener 
 
 	@Override
 	public InputStream openRoot(String var1) throws IOException {
-		return open(ResourceType.ASSETS, new Identifier(var1));
+		return Blur.class.getResourceAsStream("/assets/blur/" + var1);
 	}
 
 	@Override
 	public Collection<Identifier> findResources(ResourceType var1, String var2, int var3, Predicate<String> var4) {
 		return Collections.emptyList();
 	}
-
 }
