@@ -1,7 +1,13 @@
 package com.tterrag.blur;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +16,8 @@ import javax.annotation.Nonnull;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.tterrag.blur.mixin.MixinWorldRenderer;
 import com.tterrag.blur.util.ReflectionHelper;
 import com.tterrag.blur.util.ShaderResourcePack;
@@ -20,6 +28,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.Shader;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ingame.ChatGui;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.resource.ClientResourcePackContainer;
 import net.minecraft.client.texture.NativeImage;
@@ -38,16 +47,19 @@ public class Blur implements ModInitializer {
     public static final String MODID = "blur";
     public static final String MOD_NAME = "Blur";
     public static final String VERSION = "@VERSION@";
-
-    private String[] blurExclusions = new String[] {
-        "net.minecraft.client.gui.ingame.ChatGui"
-    };
+    
+    static class ConfigJson {
+        String[] blurExclusions = new String[] { ChatGui.class.getName() };
+        int fadeTimeMillis = 200;
+        int radius = 8;
+        String gradientStartColor = "75000000";
+        String gradientEndColor = "75000000";
+    }
 
     private Field _listShaders;
     private long start;
-    private int fadeTime = 250;
-    
-    public int radius = 10; // Store default so we don't trigger an extra reload
+
+    public ConfigJson configs = new ConfigJson();
     public int colorFirst, colorSecond;
     
     @Nonnull
@@ -80,56 +92,34 @@ public class Blur implements ModInitializer {
     }
     
     @Override
-    public void onInitialize() {}
-    
+    public void onInitialize() {
+        Path config = MinecraftClient.getInstance().runDirectory.toPath().resolve(Paths.get("config", "blur.cfg"));
+        File configFile = config.toFile();
+        try {
+            if (!configFile.exists()) {
+                configFile.getParentFile().mkdirs();
+                Files.write(config, new GsonBuilder().setPrettyPrinting().create().toJson(configs).getBytes(), StandardOpenOption.CREATE_NEW);
+            } else {
+                configs = new Gson().fromJson(new FileReader(configFile), ConfigJson.class);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        colorFirst = Integer.parseUnsignedInt(configs.gradientStartColor, 16);
+        colorSecond = Integer.parseUnsignedInt(configs.gradientEndColor, 16);
+    }
+
     public void registerReloadListeners(ReloadableResourceManager manager) {
         manager.addListener(dummyPack);
     }
-    
-/*    private void saveConfig() {
-        
-        blurExclusions = config.getStringList("guiExclusions", Configuration.CATEGORY_GENERAL, new String[] {
-                GuiChat.class.getName(),
-        }, "A list of classes to be excluded from the blur shader.");
-        
-        fadeTime = config.getInt("fadeTime", Configuration.CATEGORY_GENERAL, 200, 0, Integer.MAX_VALUE, "The time it takes for the blur to fade in, in ms.");
-        
-        int r = config.getInt("radius", Configuration.CATEGORY_GENERAL, 12, 1, 100, "The radius of the blur effect. This controls how \"strong\" the blur is.");
-        if (r != radius) {
-            radius = r;
-            dummyPack.onResourceManagerReload(Minecraft.getMinecraft().getResourceManager());
-            if (Minecraft.getMinecraft().world != null) {
-                Minecraft.getMinecraft().entityRenderer.stopUseShader();
-            }
-        }
 
-        colorFirst = Integer.parseUnsignedInt(
-                config.getString("gradientStartColor",  Configuration.CATEGORY_GENERAL, "75000000", "The start color of the background gradient. Given in ARGB hex."),
-                16
-        );
-        
-        colorSecond = Integer.parseUnsignedInt(
-                config.getString("gradientEndColor",    Configuration.CATEGORY_GENERAL, "75000000", "The end color of the background gradient. Given in ARGB hex."),
-                16
-        );
-        
-        config.save();
-    }*/
-    
-/*    @SubscribeEvent
-    public void onConfigChanged(OnConfigChangedEvent event) {
-        if (event.getModID().equals(MODID)) {
-            saveConfig();
-        }
-    }
-    */
     public void onGuiChange(Gui newGui) {
         if (_listShaders == null) {
             _listShaders = ReflectionHelper.getField(class_279.class, "field_1497");
         }
         if (MinecraftClient.getInstance().world != null) {
             WorldRenderer er = MinecraftClient.getInstance().worldRenderer;
-            boolean excluded = newGui == null || ArrayUtils.contains(blurExclusions, newGui.getClass().getName());
+            boolean excluded = newGui == null || ArrayUtils.contains(configs.blurExclusions, newGui.getClass().getName());
             if (!er.method_3175() && !excluded) {
                 ((MixinWorldRenderer)er).invokeLoadShader(new Identifier("shaders/post/fade_in_blur.json"));
                 start = System.currentTimeMillis();
@@ -139,8 +129,12 @@ public class Blur implements ModInitializer {
         }
     }
     
+    public int getRadius() {
+        return configs.radius;
+    }
+    
     private float getProgress() {
-        return Math.min((System.currentTimeMillis() - start) / (float) fadeTime, 1);
+        return Math.min((System.currentTimeMillis() - start) / (float) configs.fadeTimeMillis, 1);
     }
     
     public void onPostRenderTick() {

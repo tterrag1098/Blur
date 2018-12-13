@@ -41,7 +41,7 @@ public class ShaderResourcePack implements ResourcePack, ResourceReloadListener 
                 Scanner scan = new Scanner(in);
                 try {
                     while (scan.hasNextLine()) {
-                        data.append(scan.nextLine().replaceAll("@radius@", Integer.toString(Blur.instance.radius))).append('\n');
+                        data.append(scan.nextLine().replaceAll("@radius@", Integer.toString(Blur.instance.getRadius()))).append('\n');
                     }
                 } finally {
                     scan.close();
