@@ -18,7 +18,7 @@ public class MixinMinecraftClient {
     
     @Inject(method = "openGui(Lnet/minecraft/client/gui/Gui;)V", 
             at = @At(value = "FIELD",
-                     target = "net/minecraft/client/MinecraftClient.currentGui : Lnet/minecraft/client/gui/Gui;",
+                     target = "Lnet/minecraft/client/MinecraftClient;currentGui:Lnet/minecraft/client/gui/Gui;",
                      opcode = Opcodes.PUTFIELD))
     public void onGuiOpen(Gui newGui, CallbackInfo info) {
         Blur.instance.onGuiChange(newGui);
@@ -34,7 +34,7 @@ public class MixinMinecraftClient {
     
     @Inject(method = "init()V",
             at = @At(value = "FIELD",
-                     target = "net/minecraft/client/MinecraftClient.resourceManager : Lnet/minecraft/resource/ReloadableResourceManager;",
+                     target = "Lnet/minecraft/client/MinecraftClient;resourceManager:Lnet/minecraft/resource/ReloadableResourceManager;",
                      opcode = Opcodes.PUTFIELD,
                      shift = Shift.AFTER))
     public void onResourceManagerAssign(CallbackInfo info) {
