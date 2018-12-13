@@ -18,7 +18,7 @@ ext.buildnumber = System.getenv().BUILD_NUMBER ?: 'custom';
 
 group = 'com.tterrag.blur'
 archivesBaseName = "Blur"
-version = "${mod_version}-${buildnumber}"
+version = "${mod_version}-${minecraft_version}[fabric]${buildnumber}"
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -27,10 +27,10 @@ minecraft {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:18w50a"
-	mappings "net.fabricmc:yarn:18w50a.2"
-	modCompile "net.fabricmc:fabric-loader:0.2.0.64"
-	modCompile "net.fabricmc:fabric:0.1.1.47"
+	minecraft "com.mojang:minecraft:${minecraft_version}"
+	mappings "net.fabricmc:yarn:${minecraft_version}.${mappings_version}"
+	modCompile "net.fabricmc:fabric-loader:${fabric_loader_version}"
+	modCompile "net.fabricmc:fabric:${fabric_version}"
 	
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
