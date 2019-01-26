@@ -4,7 +4,7 @@ buildscript {
         maven { url = "http://files.minecraftforge.net/maven" }
         maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
-    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT' }
+    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT' }
 }
 plugins {
  	id 'com.matthewprenger.cursegradle' version '1.0.9'
@@ -24,7 +24,7 @@ targetCompatibility = '1.8'
 
 minecraft {
     version = "${minecraft_version}-${forge_version}"
-	mappings = 'stable_29'
+	mappings = 'stable_22'
 	
     runDir = 'run'
 
@@ -56,6 +56,7 @@ processResources {
 jar.manifest {
     attributes 'FMLCorePlugin': 'com.tterrag.blur.BlurPlugin'
     attributes 'FMLCorePluginContainsFMLMod': 'true'
+    attributes 'FMLAT': 'blur_at.cfg'
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens

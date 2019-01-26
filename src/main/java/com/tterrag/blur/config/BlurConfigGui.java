@@ -26,7 +26,7 @@ public class BlurConfigGui extends GuiConfig {
                 @SuppressWarnings({ "unused", "null" })
                 @Override
                 protected void drawContainerBackground(@Nonnull Tessellator tessellator) {
-                    if (mc.world == null) {
+                    if (mc.theWorld == null) {
                         super.drawContainerBackground(tessellator);
                     }
                 }
