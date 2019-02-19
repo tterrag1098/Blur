@@ -1,4 +1,4 @@
-package com.tterrag.blur;
+/*package com.tterrag.blur;
 
 import java.util.Iterator;
 
@@ -77,3 +77,4 @@ public class BlurTransformer implements IClassTransformer {
     }
 
 }
+*/

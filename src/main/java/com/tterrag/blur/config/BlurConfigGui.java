@@ -1,4 +1,4 @@
-package com.tterrag.blur.config;
+/*package com.tterrag.blur.config;
 
 import javax.annotation.Nonnull;
 
@@ -41,3 +41,4 @@ public class BlurConfigGui extends GuiConfig {
         drawWorldBackground(0);
     }
 }
+*/

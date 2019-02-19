@@ -1,4 +1,4 @@
-package com.tterrag.blur.config;
+/*package com.tterrag.blur.config;
 
 import java.util.Set;
 
@@ -39,3 +39,4 @@ public class BlurGuiFactory implements IModGuiFactory {
 		return new BlurConfigGui(parentScreen);
 	}
 }
+*/

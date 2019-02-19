@@ -1,0 +1,11 @@
+modLoader="javafml"
+loaderVersion="[25,)"
+issueTrackerURL="https://github.com/tterrag1098/Blur/issues"
+displayURL="https://github.com/tterrag1098/Blur/"
+authors="tterrag"
+
+[[mods]]
+modId="blur"
+version="${file.jarVersion}"
+displayName="Blur"
+description="Adds a blurry background when viewing GUIs"

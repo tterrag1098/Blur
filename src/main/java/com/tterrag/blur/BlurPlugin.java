@@ -1,4 +1,4 @@
-package com.tterrag.blur;
+/*package com.tterrag.blur;
 
 import java.util.Map;
 
@@ -31,3 +31,4 @@ public class BlurPlugin implements IFMLLoadingPlugin {
         return null;
     }
 }
+*/
