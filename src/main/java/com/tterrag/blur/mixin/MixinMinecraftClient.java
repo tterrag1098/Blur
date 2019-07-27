@@ -1,15 +1,17 @@
 package com.tterrag.blur.mixin;
 
-import com.tterrag.blur.Blur;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.resource.ReloadableResourceManager;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import com.tterrag.blur.Blur;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.resource.ReloadableResourceManager;
 
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftClient {

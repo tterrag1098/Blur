@@ -1,10 +1,12 @@
 package com.tterrag.blur.mixin;
 
-import com.tterrag.blur.Blur;
-import net.minecraft.client.gui.screen.Screen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
+
+import com.tterrag.blur.Blur;
+
+import net.minecraft.client.gui.screen.Screen;
 
 @Mixin(Screen.class)
 public class MixinScreen {

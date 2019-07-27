@@ -1,16 +1,5 @@
 package com.tterrag.blur.util;
 
-import com.google.common.collect.ImmutableSet;
-import com.tterrag.blur.Blur;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourceReloadListener;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.resource.metadata.PackResourceMetadata;
-import net.minecraft.resource.metadata.ResourceMetadataReader;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
@@ -20,6 +9,19 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Predicate;
+
+import com.google.common.collect.ImmutableSet;
+import com.tterrag.blur.Blur;
+
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourceReloadListener;
+import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.metadata.PackResourceMetadata;
+import net.minecraft.resource.metadata.ResourceMetadataReader;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
 
 public class ShaderResourcePack implements ResourcePack, ResourceReloadListener {
 

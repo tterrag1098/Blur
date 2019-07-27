@@ -1,10 +1,25 @@
 package com.tterrag.blur;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.LogManager;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tterrag.blur.mixin.MixinGameRenderer;
 import com.tterrag.blur.util.ReflectionHelper;
 import com.tterrag.blur.util.ShaderResourcePack;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.GlUniform;
@@ -19,19 +34,6 @@ import net.minecraft.resource.*;
 import net.minecraft.resource.ResourcePackContainer.Factory;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.logging.log4j.LogManager;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.List;
-import java.util.Map;
 
 public class Blur implements ClientModInitializer {
 
