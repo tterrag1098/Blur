@@ -30,8 +30,12 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.resource.ClientResourcePackContainer;
 import net.minecraft.client.texture.NativeImage;
-import net.minecraft.resource.*;
+import net.minecraft.resource.ResourcePackCompatibility;
+import net.minecraft.resource.ResourcePackContainer;
 import net.minecraft.resource.ResourcePackContainer.Factory;
+import net.minecraft.resource.ResourcePackContainerManager;
+import net.minecraft.resource.ResourcePackCreator;
+import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 
