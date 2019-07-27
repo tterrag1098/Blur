@@ -1,10 +1,28 @@
 {
+  "schemaVersion": 1,
   "id": "blur",
   "name": "Blur",
-  "version": "1.0.0",
-  "side": "client",
-  "initializer": "com.tterrag.blur.Blur",
-  "mixins": {
-  	"client": "blur.client.json"
+  "version": "$version",
+  "environment": "client",
+  "license": "MIT",
+  "icon": "assets/blur/icon.png",
+  "entrypoints": {
+    "client": [
+      "com.tterrag.blur.Blur"
+    ]
+  },
+  "contact": {
+    "homepage": "https://minecraft.curseforge.com/projects/blur",
+    "issues": "https://github.com/tterrag1098/Blur/issues"
+  },
+  "authors": [
+    "tterrag1098"
+  ],
+  "description": "Modifies the background behind Minecraft GUIs to have a blur effect",
+  "mixins": [
+    "mixins.blur.json"
+  ],
+  "custom": {
+    "modmenu:clientsideOnly": true
   }
 }

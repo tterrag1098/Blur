@@ -1,40 +1,37 @@
 package com.tterrag.blur.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.function.Predicate;
-
 import com.google.common.collect.ImmutableSet;
 import com.tterrag.blur.Blur;
-
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceReloadListener;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.PackResourceMetadata;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
-import net.minecraft.text.StringTextComponent;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
+
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.function.Predicate;
 
 public class ShaderResourcePack implements ResourcePack, ResourceReloadListener {
-    
+
     protected boolean validPath(Identifier location) {
         return location.getNamespace().equals("minecraft") && location.getPath().startsWith("shaders/");
     }
-    
+
     private final Map<Identifier, String> loadedData = new HashMap<>();
 
     @Override
     public InputStream open(ResourceType type, Identifier location) throws IOException {
-        if (type == ResourceType.ASSETS && validPath(location)) {
+        if (type == ResourceType.CLIENT_RESOURCES && validPath(location)) {
             String s = loadedData.computeIfAbsent(location, loc -> {
                 InputStream in = Blur.class.getResourceAsStream("/" + location.getPath());
                 StringBuilder data = new StringBuilder();
@@ -56,7 +53,7 @@ public class ShaderResourcePack implements ResourcePack, ResourceReloadListener 
 
     @Override
     public boolean contains(ResourceType type, Identifier location) {
-        return type == ResourceType.ASSETS && validPath(location) && Blur.class.getResource("/" + location.getPath()) != null;
+        return type == ResourceType.CLIENT_RESOURCES && validPath(location) && Blur.class.getResource("/" + location.getPath()) != null;
     }
 
     @Override
@@ -64,11 +61,11 @@ public class ShaderResourcePack implements ResourcePack, ResourceReloadListener 
         return ImmutableSet.of("minecraft");
     }
 
-    @SuppressWarnings({ "unchecked", "null" })
+    @SuppressWarnings({"unchecked", "null"})
     @Override
     public <T> T parseMetadata(ResourceMetadataReader<T> var1) throws IOException {
         if ("pack".equals(var1.getKey())) {
-            return (T) new PackResourceMetadata(new StringTextComponent("Blur's default shaders"), 4);
+            return (T) new PackResourceMetadata(new LiteralText("Blur's default shaders"), 4);
         }
         return null;
     }
@@ -77,14 +74,15 @@ public class ShaderResourcePack implements ResourcePack, ResourceReloadListener 
     public String getName() {
         return "Blur Shaders";
     }
-    
+
     @Override
-    public void onResourceReload(ResourceManager resourceManager) {
-        loadedData.clear();
+    public CompletableFuture<Void> reload(Synchronizer var1, ResourceManager var2, Profiler var3, Profiler var4, Executor var5, Executor var6) {
+        return new CompletableFuture<>().thenRun(loadedData::clear);
     }
 
     @Override
-    public void close() throws IOException {}
+    public void close() {
+    }
 
     @Override
     public InputStream openRoot(String var1) throws IOException {

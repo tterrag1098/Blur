@@ -1,17 +1,11 @@
-buildscript {
-	repositories {
-		jcenter()
-		maven { url = 'http://maven.modmuss50.me' }
-	}
-	dependencies {
-		classpath 'net.fabricmc:fabric-loom:0.1.0-SNAPSHOT'
-	}
-}
 plugins {
- 	id 'com.matthewprenger.cursegradle' version '1.0.9'
+	id 'java'
+	id 'maven-publish'
+	id 'idea'
+	id 'eclipse'
+	id 'com.matthewprenger.cursegradle' version '1.0.9'
+	id 'fabric-loom' version '0.2.4-SNAPSHOT'
 }
-
-apply plugin: 'fabric-loom'
 
 boolean dev = System.getenv('RELEASE') == null || System.getenv('RELEASE').equals('false');
 ext.buildnumber = System.getenv().BUILD_NUMBER ?: 'custom';
@@ -28,11 +22,24 @@ minecraft {
 
 dependencies {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
-	mappings "net.fabricmc:yarn:${minecraft_version}.${mappings_version}"
+	mappings "net.fabricmc:yarn:${mappings_version}"
 	modCompile "net.fabricmc:fabric-loader:${fabric_loader_version}"
-	modCompile "net.fabricmc:fabric:${fabric_version}"
+	modCompile "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 	
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
+}
+
+processResources {
+	inputs.property "version", mod_version
+
+	from(sourceSets.main.resources.srcDirs) {
+		include "fabric.mod.json"
+		expand "version": mod_version
+	}
+
+	from(sourceSets.main.resources.srcDirs) {
+		exclude "fabric.mod.json"
+	}
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
@@ -62,7 +69,7 @@ task createResourcePacks {
 			
 			from ('pack_icons') {
 				include "${pack_id}.png"
-				rename '.+', 'pack.png'
+				rename '.+', 'icon.png'
 			}
 			
 			baseName = "Blur " + pack_name
