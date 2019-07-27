@@ -46,7 +46,7 @@ public class Blur implements ClientModInitializer {
     public static final String VERSION = "@VERSION@";
 
     static class ConfigJson {
-        String[] blurExclusions = new String[]{ChatScreen.class.getName()};
+        String[] blurExclusions = new String[]{ ChatScreen.class.getName() };
         int fadeTimeMillis = 200;
         int radius = 8;
         String gradientStartColor = "75000000";

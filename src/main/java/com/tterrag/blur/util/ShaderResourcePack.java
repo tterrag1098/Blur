@@ -68,7 +68,7 @@ public class ShaderResourcePack implements ResourcePack, ResourceReloadListener 
         return ImmutableSet.of("minecraft");
     }
 
-    @SuppressWarnings({"unchecked", "null"})
+    @SuppressWarnings({ "unchecked", "null" })
     @Override
     public <T> T parseMetadata(ResourceMetadataReader<T> var1) throws IOException {
         if ("pack".equals(var1.getKey())) {
@@ -88,8 +88,7 @@ public class ShaderResourcePack implements ResourcePack, ResourceReloadListener 
     }
 
     @Override
-    public void close() {
-    }
+    public void close() throws IOException {}
 
     @Override
     public InputStream openRoot(String var1) throws IOException {

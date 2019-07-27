@@ -4,9 +4,9 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public class ReflectionHelper {
-
+    
     @SuppressWarnings("unchecked")
-    public static <T> T getValue(Class<?> cls, Object instance, String... names) {
+    public static <T> T getValue(Class<?> cls, Object instance, String...names) {
         try {
             return (T) getField(cls, names).get(instance);
         } catch (IllegalAccessException e) {
