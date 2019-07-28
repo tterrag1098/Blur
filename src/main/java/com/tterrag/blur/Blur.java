@@ -5,8 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +19,7 @@ import com.tterrag.blur.util.ReflectionHelper;
 import com.tterrag.blur.util.ShaderResourcePack;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.PostProcessShader;
@@ -89,12 +88,11 @@ public class Blur implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        Path config = MinecraftClient.getInstance().runDirectory.toPath().resolve(Paths.get("config", "blur.cfg"));
-        File configFile = config.toFile();
+        File configFile = new File(FabricLoader.getInstance().getConfigDirectory(), Blur.MODID + ".json");
         try {
             if (!configFile.exists()) {
                 configFile.getParentFile().mkdirs();
-                Files.write(config, new GsonBuilder().setPrettyPrinting().create().toJson(configs).getBytes(), StandardOpenOption.CREATE_NEW);
+                Files.write(configFile.toPath(), new GsonBuilder().setPrettyPrinting().create().toJson(configs).getBytes(), StandardOpenOption.CREATE_NEW);
             } else {
                 configs = new Gson().fromJson(new FileReader(configFile), ConfigJson.class);
             }
