@@ -13,7 +13,7 @@ public class ReflectionHelper {
             throw new RuntimeException(e);
         }
     }
-    
+
     public static Field getField(Class<?> cls, String... names) {
         for (String name : names) {
             Field f = getFieldInternal(cls, name);

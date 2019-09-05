@@ -2,10 +2,10 @@
   "required": true,
   "package": "com.tterrag.blur.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  	"MixinGui",
+  "client": [
+  	"MixinScreen",
     "MixinMinecraftClient",
-    "MixinWorldRenderer"
+    "MixinGameRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
