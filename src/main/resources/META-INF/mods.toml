@@ -9,3 +9,16 @@ modId="blur"
 version="${file.jarVersion}"
 displayName="Blur"
 description="Adds a blurry background when viewing GUIs"
+
+[[dependencies.blur]]
+    modId="forge"
+    mandatory=true
+    versionRange="[28.1.0,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.firstaid]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4,1.15)"
+    ordering="NONE"
+    side="BOTH"

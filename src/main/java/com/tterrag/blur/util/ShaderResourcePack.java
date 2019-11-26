@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,11 +22,15 @@ import net.minecraft.resources.ResourcePackType;
 import net.minecraft.resources.data.IMetadataSectionSerializer;
 import net.minecraft.resources.data.PackMetadataSection;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.moddiscovery.ModFile;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
 public class ShaderResourcePack implements IResourcePack, ISelectiveResourceReloadListener {
+
+	private final ModFile blurModFile = FMLLoader.getLoadingModList().getModFileById("blur").getFile();
 	
 	protected boolean validPath(ResourceLocation location) {
 		return location.getNamespace().equals("minecraft") && location.getPath().startsWith("shaders/");
@@ -37,8 +42,13 @@ public class ShaderResourcePack implements IResourcePack, ISelectiveResourceRelo
 	public InputStream getResourceStream(ResourcePackType type, ResourceLocation location) throws IOException {
         if (type == ResourcePackType.CLIENT_RESOURCES && validPath(location)) {
             String s = loadedData.computeIfAbsent(location, loc -> {
-                InputStream in = ClassLoader.getSystemResourceAsStream(location.getPath());
-                StringBuilder data = new StringBuilder();
+				InputStream in;
+				try {
+					in = Files.newInputStream(blurModFile.findResource(location.getPath()));
+				} catch (IOException e) {
+					throw new RuntimeException("Could not read " + location.getPath());
+				}
+				StringBuilder data = new StringBuilder();
                 Scanner scan = new Scanner(in);
                 try {
                     while (scan.hasNextLine()) {
@@ -57,7 +67,7 @@ public class ShaderResourcePack implements IResourcePack, ISelectiveResourceRelo
 
 	@Override
 	public boolean resourceExists(ResourcePackType type, ResourceLocation location) {
-		return type == ResourcePackType.CLIENT_RESOURCES && validPath(location) && ClassLoader.getSystemResource(location.getPath()) != null;
+		return type == ResourcePackType.CLIENT_RESOURCES && validPath(location) && Files.exists(blurModFile.findResource(location.getPath()));
 	}
 
 	@Override
@@ -69,7 +79,7 @@ public class ShaderResourcePack implements IResourcePack, ISelectiveResourceRelo
     @Override
 	public <T> T getMetadata(IMetadataSectionSerializer<T> arg0) throws IOException {
 	    if ("pack".equals(arg0.getSectionName())) {
-	        return (T) new PackMetadataSection(new TextComponentString("Blur's default shaders"), 3);
+	        return (T) new PackMetadataSection(new StringTextComponent("Blur's default shaders"), 3);
 	    }
 	    return null;
     }
@@ -91,7 +101,7 @@ public class ShaderResourcePack implements IResourcePack, ISelectiveResourceRelo
 	
 	@Override
 	public InputStream getRootResourceStream(String arg0) throws IOException {
-        return ClassLoader.getSystemResourceAsStream("assets/blur/" + arg0);
+        return Files.newInputStream(blurModFile.findResource("assets/blur/" + arg0));
 	}
 	
 	@Override
