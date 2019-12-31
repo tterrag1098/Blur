@@ -1,6 +1,5 @@
 package com.tterrag.blur.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,12 +8,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableSet;
-import com.tterrag.blur.BlurConfig;
 
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourcePack;
@@ -41,26 +38,11 @@ public class ShaderResourcePack implements IResourcePack, ISelectiveResourceRelo
 	@Override
 	public InputStream getResourceStream(ResourcePackType type, ResourceLocation location) throws IOException {
         if (type == ResourcePackType.CLIENT_RESOURCES && validPath(location)) {
-            String s = loadedData.computeIfAbsent(location, loc -> {
-				InputStream in;
-				try {
-					in = Files.newInputStream(blurModFile.findResource(location.getPath()));
-				} catch (IOException e) {
-					throw new RuntimeException("Could not read " + location.getPath());
-				}
-				StringBuilder data = new StringBuilder();
-                Scanner scan = new Scanner(in);
-                try {
-                    while (scan.hasNextLine()) {
-                        data.append(scan.nextLine().replaceAll("@radius@", Integer.toString(BlurConfig.CLIENT.radius.get()))).append('\n');
-                    }
-                } finally {
-                    scan.close();
-                }
-                return data.toString();
-            });
-
-            return new ByteArrayInputStream(s.getBytes());
+            try {
+                return Files.newInputStream(blurModFile.findResource(location.getPath()));
+            } catch (IOException e) {
+                throw new RuntimeException("Could not read " + location.getPath());
+            }
         }
         throw new FileNotFoundException(location.toString());
 	}

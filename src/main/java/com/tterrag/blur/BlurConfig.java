@@ -13,9 +13,10 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
 
-@EventBusSubscriber(modid = Blur.MODID)
+@EventBusSubscriber(modid = Blur.MODID, bus = Bus.MOD)
 public class BlurConfig {
 
 	public static class Client {
@@ -72,7 +73,17 @@ public class BlurConfig {
     
     @SubscribeEvent
     public static void onLoad(final ModConfig.Loading configEvent) {
-    	colorFirst = Integer.parseInt(CLIENT.colorFirstRaw.get(), 16);
-    	colorSecond = Integer.parseInt(CLIENT.colorSecondRaw.get(), 16);
+        updateColors();
+    }
+    
+    @SubscribeEvent
+    public static void onReload(final ModConfig.ConfigReloading configEvent) {
+        updateColors();
+    }
+    
+    private static void updateColors() {
+        colorFirst = Integer.parseUnsignedInt(CLIENT.colorFirstRaw.get(), 16);
+        colorSecond = Integer.parseUnsignedInt(CLIENT.colorSecondRaw.get(), 16);
+        Blur.instance.updateUniform("Radius", CLIENT.radius.get());
     }
 }

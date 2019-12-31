@@ -71,7 +71,7 @@ public class Blur {
                 } catch (IOException e) {
                     LogManager.getLogger().error("Could not load blur's pack.png", e);
                 }
-                @SuppressWarnings("unchecked")
+                @SuppressWarnings({ "unchecked", "deprecation" })
                 T var3 = (T) new ClientResourcePackInfo("blur", true, () -> dummyPack, new StringTextComponent(dummyPack.getName()), new StringTextComponent("Default shaders for Blur"),
                         PackCompatibility.COMPATIBLE, Priority.BOTTOM, true, img);
                 if (var3 != null) {
@@ -99,6 +99,7 @@ public class Blur {
             boolean excluded = event.getGui() == null || BlurConfig.CLIENT.guiExclusions.get().contains(event.getGui().getClass().getName());
             if (!er.isShaderActive() && !excluded) {
                 er.loadShader(new ResourceLocation("shaders/post/fade_in_blur.json"));
+                updateUniform("Radius", BlurConfig.CLIENT.radius.get());
                 start = System.currentTimeMillis();
             } else if (er.isShaderActive() && excluded) {
                 er.stopUseShader();
@@ -110,22 +111,33 @@ public class Blur {
         return Math.min((System.currentTimeMillis() - start) / (float) BlurConfig.CLIENT.fadeTime.get(), 1);
     }
     
+    private float prevProgress = -1;
+    
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.END && Minecraft.getInstance().currentScreen != null && Minecraft.getInstance().gameRenderer.isShaderActive()) {
-            ShaderGroup sg = Minecraft.getInstance().gameRenderer.getShaderGroup();
-            try {
-                @SuppressWarnings("unchecked")
-                List<Shader> shaders = (List<Shader>) _listShaders.get(sg);
-                for (Shader s : shaders) {
-                    ShaderDefault su = s.getShaderManager().getShaderUniform("Progress");
-                    if (su != null) {
-                        su.set(getProgress());
-                    }
-                }
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                throw new RuntimeException(e);
+            float progress = getProgress();
+            if (progress != prevProgress) {
+                prevProgress = progress;
+                updateUniform("Progress", progress);
             }
+        }
+    }
+    
+    public void updateUniform(String name, float value) {
+        if (_listShaders == null) return;
+        ShaderGroup sg = Minecraft.getInstance().gameRenderer.getShaderGroup();
+        try {
+            @SuppressWarnings("unchecked")
+            List<Shader> shaders = (List<Shader>) _listShaders.get(sg);
+            for (Shader s : shaders) {
+                ShaderDefault su = s.getShaderManager().getShaderUniform(name);
+                if (su != null) {
+                    su.set(value);
+                }
+            }
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
     

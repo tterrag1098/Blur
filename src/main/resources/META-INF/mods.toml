@@ -3,6 +3,7 @@ loaderVersion="[25,)"
 issueTrackerURL="https://github.com/tterrag1098/Blur/issues"
 displayURL="https://github.com/tterrag1098/Blur/"
 authors="tterrag"
+logoFile="blur_logo.png"
 
 [[mods]]
 modId="blur"

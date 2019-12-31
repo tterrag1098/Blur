@@ -1,6 +1,6 @@
 function initializeCoreMod() {
     return {
-        'coreModName': {
+        'hookBackgroundColor': {
             'target': {
                 'type': 'METHOD',
                 'class': 'net.minecraft.client.gui.screen.Screen',
