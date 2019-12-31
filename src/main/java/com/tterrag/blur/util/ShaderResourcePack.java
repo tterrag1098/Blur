@@ -81,6 +81,12 @@ public class ShaderResourcePack implements IResourcePack, ISelectiveResourceRelo
 		return Collections.emptyList();
 	}
 	
+	// Soft override for 1.15
+	//@Override
+    public Collection<ResourceLocation> func_225637_a_(ResourcePackType p_225637_1_, String p_225637_2_, String p_225637_3_, int p_225637_4_, Predicate<String> p_225637_5_) {
+        return Collections.emptyList();
+    }
+	
 	@Override
 	public InputStream getRootResourceStream(String arg0) throws IOException {
         return Files.newInputStream(blurModFile.findResource("assets/blur/" + arg0));

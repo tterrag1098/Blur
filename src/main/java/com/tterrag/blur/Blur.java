@@ -28,10 +28,12 @@ import net.minecraft.resources.ResourcePackList;
 import net.minecraft.resources.SimpleReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -55,29 +57,31 @@ public class Blur {
     private ShaderResourcePack dummyPack = new ShaderResourcePack();
     
     public Blur() {
-    	FMLJavaModLoadingContext.get().getModEventBus().register(this);
-        MinecraftForge.EVENT_BUS.register(this);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, BlurConfig.clientSpec);
-        
-//        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.RESOURCEPACK, () -> (mc, pack) -> dummyPack);
-        ResourcePackList<ClientResourcePackInfo> rps = ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getInstance(), "field_110448_aq");
-        rps.addPackFinder(new IPackFinder() {
-
-            @Override
-            public <T extends ResourcePackInfo> void addPackInfosToMap(Map<String, T> nameToPackMap, ResourcePackInfo.IFactory<T> packInfoFactory) {
-                NativeImage img = null;
-                try {
-                    img = NativeImage.read(dummyPack.getRootResourceStream("pack.png"));
-                } catch (IOException e) {
-                    LogManager.getLogger().error("Could not load blur's pack.png", e);
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        	FMLJavaModLoadingContext.get().getModEventBus().register(this);
+            MinecraftForge.EVENT_BUS.register(this);
+            ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, BlurConfig.clientSpec);
+            
+    //        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.RESOURCEPACK, () -> (mc, pack) -> dummyPack);
+            ResourcePackList<ClientResourcePackInfo> rps = ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getInstance(), "field_110448_aq");
+            rps.addPackFinder(new IPackFinder() {
+    
+                @Override
+                public <T extends ResourcePackInfo> void addPackInfosToMap(Map<String, T> nameToPackMap, ResourcePackInfo.IFactory<T> packInfoFactory) {
+                    NativeImage img = null;
+                    try {
+                        img = NativeImage.read(dummyPack.getRootResourceStream("pack.png"));
+                    } catch (IOException e) {
+                        LogManager.getLogger().error("Could not load blur's pack.png", e);
+                    }
+                    @SuppressWarnings({ "unchecked", "deprecation" })
+                    T var3 = (T) new ClientResourcePackInfo("blur", true, () -> dummyPack, new StringTextComponent(dummyPack.getName()), new StringTextComponent("Default shaders for Blur"),
+                            PackCompatibility.COMPATIBLE, Priority.BOTTOM, true, img);
+                    if (var3 != null) {
+                    	nameToPackMap.put("blur", var3);
+                    }
                 }
-                @SuppressWarnings({ "unchecked", "deprecation" })
-                T var3 = (T) new ClientResourcePackInfo("blur", true, () -> dummyPack, new StringTextComponent(dummyPack.getName()), new StringTextComponent("Default shaders for Blur"),
-                        PackCompatibility.COMPATIBLE, Priority.BOTTOM, true, img);
-                if (var3 != null) {
-                	nameToPackMap.put("blur", var3);
-                }
-            }
+            });
         });
 
         instance = this;
@@ -97,11 +101,11 @@ public class Blur {
         if (Minecraft.getInstance().world != null) {
             GameRenderer er = Minecraft.getInstance().gameRenderer;
             boolean excluded = event.getGui() == null || BlurConfig.CLIENT.guiExclusions.get().contains(event.getGui().getClass().getName());
-            if (!er.isShaderActive() && !excluded) {
+            if (er.getShaderGroup() == null && !excluded) {
                 er.loadShader(new ResourceLocation("shaders/post/fade_in_blur.json"));
                 updateUniform("Radius", BlurConfig.CLIENT.radius.get());
                 start = System.currentTimeMillis();
-            } else if (er.isShaderActive() && excluded) {
+            } else if (er.getShaderGroup() != null && excluded) {
                 er.stopUseShader();
             }
         }
@@ -115,7 +119,7 @@ public class Blur {
     
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
-        if (event.phase == TickEvent.Phase.END && Minecraft.getInstance().currentScreen != null && Minecraft.getInstance().gameRenderer.isShaderActive()) {
+        if (event.phase == TickEvent.Phase.END && Minecraft.getInstance().currentScreen != null && Minecraft.getInstance().gameRenderer.getShaderGroup() != null) {
             float progress = getProgress();
             if (progress != prevProgress) {
                 prevProgress = progress;
