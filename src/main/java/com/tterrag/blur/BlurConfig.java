@@ -79,7 +79,7 @@ public class BlurConfig {
     }
     
     @SubscribeEvent
-    public static void onReload(final ModConfig.ConfigReloading configEvent) {
+    public static void onReload(final ModConfig.Reloading configEvent) {
         updateColors();
     }
     
