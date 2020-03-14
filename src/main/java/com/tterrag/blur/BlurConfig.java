@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.SleepInMultiplayerScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
@@ -31,7 +32,7 @@ public class BlurConfig {
 		
 		Client(ForgeConfigSpec.Builder builder) {
 			guiExclusions = builder.comment("A list of classes to be excluded from the blur shader.")
-					.defineList("guiExclusions", Lists.newArrayList(ChatScreen.class.getName()), o -> {
+					.defineList("guiExclusions", Lists.newArrayList(ChatScreen.class.getName(), SleepInMultiplayerScreen.class.getName()), o -> {
 						try {
 							return o instanceof String && Class.forName((String) o) != null;
 						} catch (ClassNotFoundException e) {
