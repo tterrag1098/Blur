@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 
 import com.tterrag.blur.util.ShaderResourcePack;
@@ -34,11 +35,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.network.FMLNetworkConstants;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MODID)
@@ -57,6 +60,7 @@ public class Blur {
     private ShaderResourcePack dummyPack = new ShaderResourcePack();
     
     public Blur() {
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
         	FMLJavaModLoadingContext.get().getModEventBus().register(this);
             MinecraftForge.EVENT_BUS.register(this);
