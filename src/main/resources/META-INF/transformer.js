@@ -5,13 +5,9 @@ function initializeCoreMod() {
                 'type': 'METHOD',
                 'class': 'net.minecraft.client.gui.screen.Screen',
                 'methodName': 'renderBackground', //not obfuscated
-                'methodDesc': '(I)V'
+                'methodDesc': '(Lcom/mojang/blaze3d/matrix/MatrixStack;I)V'
             },
             'transformer': function(methodNode) {
-
-                var DRAW_WORLD_BAGKGROUND_METHOD = "drawWorldBackground";
-                var DRAW_WORLD_BAGKGROUND_METHOD_OBF = "func_146270_b";
-
                 var BLUR_MAIN_CLASS = "com/tterrag/blur/Blur";
                 var COLOR_HOOK_METHOD_NAME = "getBackgroundColor";
                 var COLOR_HOOK_METHOD_DESC = "(Z)I";
@@ -28,7 +24,7 @@ function initializeCoreMod() {
                     new InsnNode(Opcodes.ICONST_0),
                     colorHook2
                 );
-                var invokeNode = ASMAPI.findFirstMethodCall(methodNode, ASMAPI.MethodType.VIRTUAL, "net/minecraft/client/gui/screen/Screen", "fillGradient", "(IIIIII)V");
+                var invokeNode = ASMAPI.findFirstMethodCall(methodNode, ASMAPI.MethodType.VIRTUAL, "net/minecraft/client/gui/screen/Screen", "fillGradient", "(Lcom/mojang/blaze3d/matrix/MatrixStack;IIIIII)V");
                 //Get the nodes to replace and remove them
                 var toRemove1 = invokeNode.getPrevious();
                 if (toRemove1.getOpcode() != Opcodes.LDC)

@@ -77,7 +77,7 @@ public class ShaderResourcePack implements IResourcePack, ISelectiveResourceRelo
 	}
 
 	@Override
-    public Collection<ResourceLocation> func_225637_a_(ResourcePackType p_225637_1_, String p_225637_2_, String p_225637_3_, int p_225637_4_, Predicate<String> p_225637_5_) {
+    public Collection<ResourceLocation> getAllResourceLocations(ResourcePackType p_225637_1_, String p_225637_2_, String p_225637_3_, int p_225637_4_, Predicate<String> p_225637_5_) {
         return Collections.emptyList();
     }
 	
@@ -87,5 +87,5 @@ public class ShaderResourcePack implements IResourcePack, ISelectiveResourceRelo
 	}
 	
 	@Override
-	public void close() throws IOException {}
+	public void close() {}
 }

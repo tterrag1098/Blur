@@ -4,6 +4,7 @@ issueTrackerURL="https://github.com/tterrag1098/Blur/issues"
 displayURL="https://github.com/tterrag1098/Blur/"
 authors="tterrag"
 logoFile="blur_logo.png"
+license="MIT"
 
 [[mods]]
 modId="blur"

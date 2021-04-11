@@ -27,7 +27,7 @@ archivesBaseName = "Blur"
 version = "${mod_version}-${buildnumber}"
 
 minecraft {
-    mappings channel: 'snapshot', version: '20191106-1.14.3'
+    mappings channel: 'snapshot', version: '20210309-1.16.5'
     
     //accessTransformer = file('my_at.cfg')
 
